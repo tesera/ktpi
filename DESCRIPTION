@@ -1,0 +1,37 @@
+Package: ktpi
+Type: Package
+Title: Geographic Raster Kernel Topographic Indices
+Version: 1.0-0
+Date: 2016-04-20
+Depends: methods, sp (>= 1.2-0), R (>= 3.0.0)
+Suggests: rgdal (>= 0.9-1), rgeos (>= 0.3-8), ncdf4, igraph, tcltk,
+        parallel, rasterVis
+LinkingTo: 
+Imports:
+        sp (1.2-2),
+        raster,
+        rgdal (1.1-8),
+        rgeos,
+        docopt,
+        testthat
+Authors@R: c(
+        person("Michael E.", "Kieser", role = c("cre", "aut"),  email = "michael.kieser@tesera.com"),
+	person("Dwight", "Crouse", role = "ctb"),
+	person("Ian", "Moss", role = "ctb"),
+        person("Yves", "Richards", role = "ctb"),
+	person("Matt", "Zandstra", role = "ctb"))
+Description: Calculating properties of topography from a digital elevation model using a dynamic kernel (focal analysis) and aggregating (zonal analysis) the data to a feature area.
+License: GPL (>= 3)
+URL: https://github.com/tesera/ktpi
+BugReports: https://github.com/tesera/ktpi/issues
+ByteCompile: TRUE
+NeedsCompilation: yes
+Packaged: 2016-04-20 23:48:31 UTC; mkieser
+Author: Michael E. Kieser [cre, aut],
+  Dwight Crouse [ctb],
+  Ian Moss [ctb],
+  Yves Richards [ctb],
+  Matt Zandstra [ctb]
+Maintainer: Michael E. Kieser <michael.kieser@tesera.com>
+Repository: GitHub
+Date/Publication: 2016-04-20 09:59:36i

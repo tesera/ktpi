@@ -1,0 +1,2 @@
+#!/bin/bash
+echo ECS_CLUSTER=ktpi >> /etc/ecs/ecs.config
