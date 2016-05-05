@@ -62,65 +62,75 @@ The following outlines the process for structuring the input data properly for d
 
 * **Data Coordinate System**: All data must be in a UTM grid coordinate system, units in metres.
 * **Project Area**: Build a project area polygon containing the project area plus sufficient area beyond equal to the largest focal kernel, ie. 2000m, to eliminate edge effect.
-* **Tile Structure**: Develop a uniform size tile based on the [OSGEO Tile Map Service (TMS)](http://wiki.osgeo.org/wiki/Tile_Map_Service_Specification) specification, the tile structure should be established at the beginning as a function of the project area. http://server/services/service-name/(zoom-level)/x-coord/y-coord.tif
-* **DEM raster**: Collect DEM raster data over the entire region, ie. 1m, 2m, 5m, or 10m. DEM data will automatically be aggregated for larger dem cell calculations.
-* **DEM raster tiling**: Restructure the DEM raster data to the tile structure.
-* **Feature polygon**: Polygon features with unique integer identifier.
-* **Feature raster**: Corresponding raster format of the feature polygon with the raster cell value as its unique integer identifier (feature raster cells must coincide with DEM raster).
-* **Feature raster tiling**: Restructure the feature unit data to the tile structure.
+* **Tile Structure**: Develop a uniform size tile at the beginning as a function of the project area.
+* **DEM raster**: DEM raster data over the entire region, ie. 1m, 2m, 5m, or 10m. DEM data will automatically be aggregated, as specified, for larger dem cell calculations.
+* **DEM raster tiling**: Restructure the DEM raster data to the tile structure. /input/dems/<column folder>/<row file>.tif
+* **Feature polygon**: Polygon features with UNIQUE RASTER identifier.
+* **Feature raster**: Corresponding raster format of the feature polygon with the raster cell value as its unique integer identifier and will be used for the zonal analysis (NOTE: Feature rasters must coincide with DEM raster, origin and cell size).
+* **Feature raster tiling**: Restructure the feature unit data to the tile structure. /input/features/<column folder>/<row file>.tif
 
+NOTE 1 - DEM cell size VS. kernel size: It is HIGHLY recommended that at larger [kernel size]s you choose a larger [dem cell size] that is a multiple of the original dem cell size. When the kernel is over 100 times the dem cell size the KTPI script takes significantly longer to process, and frankly could crash as your kernel focal analysis would contain 40000 cells (a square 200 cells E-W and 200 cells N-S).
 
-## Data Output
+NOTE 2 - DEM cell size: KTPI will automatically aggregate the DEM raster up to the new dem cell size as requested by the CLI input. It should be noted that the dem cell size should always be a multiple of the original dem cell size and evenly divisible into the number of cells in the raster. Example: your raster tiles are 500x500 cells of 5m x 5m or 2500m x 2500m: I recommend using the 5m dem cell size for kernels up to 500m, then use a 10m dem cell size for kernels up to 1000m, then 20m dem cell size for kernels up to 2000m, however a 30m dem cell size cannot be used as 2500m is no evenly divisible by 30m, the next recommended dem cell sizes would be 25m, then 50m, then 100m.
 
-The following is a list of the *output indice values* summarized for each feature entity in a [tile] for a given [dem_cell_size] and [kernel_size]: ./output/[tile].csv
+NOTE 3 - Adjacent tile merging: Provided your input data is structured properly (/input/dems/<column folder>/<row file>.tif & /input/features/<column folder>/<row file>.tif)) KTPI will automatically merge the adjacent tiles it requires for the kernel it is trying to calculate to remove any edge effect calculations within the subject tile. Example: your raster tiles are 500x500 cells of 5m x 5m or 2500m x 2500m: if you want a kernel calculation of 2000m on tile /5/6.tif, KTPI will automatically merge the adjacent 8 raster tiles (/4/5.tif, /5/5.tif, /6/5.tif, /4/6.tif, /6/6.tif, /4/7.tif, /5/7.tif, /6/7.tif) so the edge calculations in the subject tile (/5/6.tif) will compute properly; if you want a kernel calculation of 4000m on /5/6.tif, KTPI will automatically merge the adjacent 24 raster tiles so the edge calculations in the subject tile will compute properly.
 
-#### DEM statistic indices:
+NOTE 4 - Features split across tiles: If a feature polygon in the subject tile is split across multiple adjacent tiles, KTPI will calculate the values for the entire feature based on the above merged tiles and output the result for the entire feature. The result for that same feature in the adjacent tile calculations will again calculate the values for the entire feature, so the results for that feature will be duplicated.
+
+## Feature Data Output
+
+The following is a list of the *output indice values* summarized for each feature entity in a [tile] for a given [dem_cell_size] and [kernel_size]: ./output/<col>_<row>_<function name>_<kasp orientation>_<dem cell size>_<kernel size>_indices.csv
+
+#### DEM statistic indices: <col>_<row>_statistic__<dem cell size>__indices.csv
 * **tr_st_min_[dem_cell_size]**: minimum elevation within the feature for that DEM raster cell size
 * **tr_st_max_[dem_cell_size]**: maximum elevation within the feature for that DEM raster cell size
 * **tr_st_mean_[dem_cell_size]**: mean elevation within the feature for that DEM raster cell size
 * **tr_st_sd_[dem_cell_size]**: standard deviation of elevation values within the feature for that DEM raster cell size
 
-#### DEM terrain indices:
+#### DEM terrain indices: <col>_<row>_terrain__<dem cell size>__indices.csv
 * **tr_te_tri_[dem_cell_size]**: Terrain Roughness Index within the feature for that DEM raster cell size
 * **tr_te_tpi_[dem_cell_size]**: Topographic Position Index within the feature for that DEM raster cell size
 * **tr_te_roughness_[dem_cell_size]**: roughness within the feature for that DEM raster cell size
 * **tr_te_slope_[dem_cell_size]**: slope within the feature for that DEM raster cell size
 * **tr_te_aspect_[dem_cell_size]**: aspect within the feature for that DEM raster cell size
 
-#### DEM topographic position indices:
-* **tr_tp_[dem_cell_size]m_[kernel_size]m_[kernel_cells]_mean_diff**: the mean, of the difference in elevation values between each cell and the mean elevation of the kernel cells, of each cell within the feature for that kernel size and that DEM raster cell size
-* **tr_tp_[dem_cell_size]m_[kernel_size]m_[kernel_cells]_sd**: the mean, of the standard deviation of elevation values of the kernel cells, of each cell within the feature for that kernel size and that DEM raster cell size
+#### DEM topographic position indices: <col>_<row>_ktpi__<dem cell size>_<kernel size>_indices.csv
+* **tr_tp_[dem_cell_size]m_[kernel_size]m_[kernel_cells]_mean_diff**: the mean, of the difference in elevation between the subject cell and the mean elevation of the kernel cells, of each cell within the feature for that kernel size and that DEM raster cell size
+* **tr_tp_[dem_cell_size]m_[kernel_size]m_[kernel_cells]_sd**: the mean, of the standard deviation of elevation of the kernel cells, of each cell within the feature for that kernel size and that DEM raster cell size
 
-#### DEM kernel aspect indices:
+#### DEM kernel aspect indices: <col>_<row>_kasp<func>_<kasp orientation>_<dem cell size>_<kernel size>_indices.csv
 * **tr_ka_[dem_cell_size]m_[kernel_size]m_[kernel_cells]_[kasp_function]_[orientation]**: the kasp aspect interactions as a function of slope, direction and/or elevation, of each cell within the feature for that kernel size and that DEM raster cell size
 
-The following is a list of the *output raster files* for a [tile] for a given [dem_cell_size] and [kernel_size]:
+
+## Raster Output
+
+KTPI can also output the rasters that are generated prior to the zonal analysis to the feature. A raster can be generated for every indice in every tile, the following is a list of the *output raster files* for a [tile] for a given [dem_cell_size] and [kernel_size]:
 
 #### DEM statistic indice rasters:
-* **./output/tr_st/max/[dem_cell_size]/[tile].tif**
-* **./output/tr_st/mean/[dem_cell_size]/[tile].tif**
-* **./output/tr_st/min/[dem_cell_size]/[tile].tif**
-* **./output/tr_st/sd/[dem_cell_size]/[tile].tif**
+* **./output/tr_st/max/[dem_cell_size]/<column folder>/<row file>.tif**
+* **./output/tr_st/mean/[dem_cell_size]/<column folder>/<row file>.tif**
+* **./output/tr_st/min/[dem_cell_size]/<column folder>/<row file>.tif**
+* **./output/tr_st/sd/[dem_cell_size]/<column folder>/<row file>.tif**
 
 #### DEM terrain indice rasters:
-* **./output/tr_te/aspect/[dem_cell_size]/[tile].tif**
-* **./output/tr_te/ktpiflowdir9/[dem_cell_size]/[tile].tif**
-* **./output/tr_te/roughness/[dem_cell_size]/[tile].tif**
-* **./output/tr_te/slope/[dem_cell_size]/[tile].tif**
-* **./output/tr_te/tpi/[dem_cell_size]/[tile].tif**
-* **./output/tr_te/tri/[dem_cell_size]/[tile].tif**
+* **./output/tr_te/aspect/[dem_cell_size]/<column folder>/<row file>.tif**
+* **./output/tr_te/ktpiflowdir9/[dem_cell_size]/<column folder>/<row file>.tif**
+* **./output/tr_te/roughness/[dem_cell_size]/<column folder>/<row file>.tif**
+* **./output/tr_te/slope/[dem_cell_size]/<column folder>/<row file>.tif**
+* **./output/tr_te/tpi/[dem_cell_size]/<column folder>/<row file>.tif**
+* **./output/tr_te/tri/[dem_cell_size]/<column folder>/<row file>.tif**
 
 #### DEM kernel topographic indice rasters:
-* **./output/tr_tp/mean_diff/[dem_cell_size]/[kernel_size]/[tile].tif**
-* **./output/tr_tp/sd/[dem_cell_size]/[kernel_size]/[tile].tif**
+* **./output/tr_tp/mean_diff/[dem_cell_size]/[kernel_size]/<column folder>/<row file>.tif**
+* **./output/tr_tp/sd/[dem_cell_size]/[kernel_size]/<column folder>/<row file>.tif**
 
 #### DEM kernel aspect indice rasters:
-* **./output/tr_ka/[kasp_function]/[dem_cell_size]/[kernel_size]/[orientation]/[tile].tif**
+* **./output/tr_ka/[kasp_function]/[dem_cell_size]/[kernel_size]/[orientation]/<column folder>/<row file>.tif**
 
 
 ## Scaled indice generation
 
-Performing indice generation over a large area, over multiple [dem_cell_size] and over a range of [kernel_size] requires running the tool many times, for example all indices on one tile:6/7, one dem cell size:18, two kernel sizes:200&1600, and the three kasp orientations:across,uphill,downhill the following CLI commands are required:
+Performing indice generation over a large area, over multiple [dem_cell_size] and over a range of [kernel_size] requires running the tool many times, for example all indices on one tile:6/7, one dem cell size:18, only two kernel sizes:200&1600, and the three kasp orientations:across,uphill,downhill the following CLI commands are required:
 
 ````
 ./ktpi.r statistic ./input/features/6/7.tif ./input/dems ./output -d 18 -x
