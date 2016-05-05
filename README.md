@@ -1,4 +1,7 @@
-# ktpi
+# ktpi (Kernel Topographic Position Indice)
+
+**TL/DR: KPTI creates multi-scale and multi-kernel terrain indices from digital elevation modle (DEM) data.  It can be used locally or in a more complex cluster configuration on Amazon Web Services for larger jobs.**
+
 
 Kernel Topographic Position Indice (ktpi) is a R based utility to classify topography based on elevation statistics, terrain indices and topographic position indices from DEM (digital elevation model) data. This is based on the work of Jones, K. Bruce et al 2000; Weiss 2001; Moore, I.D. et. al., 1993; Stage and Salas, 2007; and Wilson and Gallant, 2005 in Terrain Analysis: Principles and Applications.
 
