@@ -282,7 +282,7 @@ createKtpiSQSMessages <- function(ktpiFeature, ktpiFunction,
             ktpiSQSMessages <- data.frame(feature = character(), indice = character(), 
                 feature_tile = character(), neighbour_tiles = character(), args = character(), stringsAsFactors = FALSE)
             for (row in tileRowMin:tileRowMax) {
-                if (paste(col,row,sep="/") %in% tiles ) { # tiles == "none" | 
+                if (tiles == "none" | paste(col,row,sep="/") %in% tiles ) {
                     CR <- paste(col, row, sep = "/")
                     if (func == "statistic" | func == "terrain") {
                         for (size in unique(demCalcSize)){

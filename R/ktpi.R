@@ -1,9 +1,9 @@
 #!/usr/bin/env Rscript
 
 library(docopt)
-source("./ktpi_util.R")
-source("./ktpi_terrain.R")
-source("./ktpi_aspect.R")
+source("../R/ktpi_util.R")
+source("../R/ktpi_terrain.R")
+source("../R/ktpi_aspect.R")
 
 '
 Usage:
