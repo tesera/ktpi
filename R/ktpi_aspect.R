@@ -1,5 +1,5 @@
-library(rgdal, quietly = TRUE)
-library(raster, quietly = TRUE)
+library(rgdal)
+library(raster)
 
 kaspIndices <- function(func = c("kaspSlp", "kaspDir", 
     "kaspSDir", "kaspCDir", "kaspSlpSDir", "kaspSlpCDir",

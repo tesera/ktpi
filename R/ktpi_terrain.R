@@ -1,5 +1,5 @@
-library(rgdal, quietly = TRUE)
-library(raster, quietly = TRUE)
+library(rgdal)
+library(raster)
 
 statisticIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRaster, outputFolder, 
     demCalcSize, exportRasters, tileCol, tileRow) {

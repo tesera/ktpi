@@ -1,5 +1,5 @@
-library(raster, quietly = TRUE)
-library(rgdal, quietly = TRUE)
+library(raster)
+library(rgdal)
 
 # gets tile number from tile file path "/<folder>/<col>/<row>.jpg"
 getTMSFolderZoomColRowExt <- function(filePath) {
@@ -80,16 +80,18 @@ getTMSTileFileNeighbours <- function(fileFolder, tileCol, tileRow, fileExt, kern
 mergeRasters <- function(neighbourFileList) {
     # initializes mergedNeighbourRasters raster
     mergedNeighbourRasters <- raster(neighbourFileList[1])
-    # merges all other rasters
-    for (file in neighbourFileList[2:length(neighbourFileList)]) {
-        tryCatch({
-            r <- raster(file)
-            mergedNeighbourRasters <- merge(mergedNeighbourRasters, r)
-        }, warning = function(w) {
-            print(w)
-        }, error = function(e) {
-            print(e)
-        })
+    if (length(neighbourFileList) > 1) {
+        # merges all other rasters
+        for (file in neighbourFileList[2:length(neighbourFileList)]) {
+            tryCatch({
+                r <- raster(file)
+                mergedNeighbourRasters <- merge(mergedNeighbourRasters, r)
+            }, warning = function(w) {
+                print(w)
+            }, error = function(e) {
+                print(e)
+            })
+        }
     }
     # return merged neighbour raster
     return(mergedNeighbourRasters)

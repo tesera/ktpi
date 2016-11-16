@@ -7,11 +7,11 @@ source("./ktpi_aspect.R")
 
 '
 Usage:
-    ktpi.R (statistic | terrain) <feature-file> <dem-folder> <output-folder> [-d|--dem-calc-size <dsize>] [-x|--exp-rast]
-    ktpi.R ktpi <feature-file> <dem-folder> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [-x|--exp-rast]
-    ktpi.R (kaspSlp | kaspDir | kaspSDir | kaspCDir | kaspSlpSDir | kaspSlpCDir | kaspSlpEle2 | kaspSlpEle2SDir | kaspSlpEle2CDir | kaspSlpLnEle | kaspSlpLnEleSlpSDir | kaspSlpLnEleSlpCDir) <feature-file> <dem-folder> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [-o|--orientation <orient>] [-x|--exp-rast]
+    ktpi.R (statistic | terrain) <feature-file> <dem-folder-file> <output-folder> [-d|--dem-calc-size <dsize>] [-x|--exp-rast]
+    ktpi.R ktpi <feature-file> <dem-folder-file> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [-x|--exp-rast]
+    ktpi.R (kaspSlp | kaspDir | kaspSDir | kaspCDir | kaspSlpSDir | kaspSlpCDir | kaspSlpEle2 | kaspSlpEle2SDir | kaspSlpEle2CDir | kaspSlpLnEle | kaspSlpLnEleSlpSDir | kaspSlpLnEleSlpCDir) <feature-file> <dem-folder-file> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [-o|--orientation <orient>] [-x|--exp-rast]
     ktpi.R neighbourhood (-c <fcol>) (-r <frow>) (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-k <ksize>)
-    ktpi.R ktpi-cli (--ktpi-function <ktpi-func>)... <feature-folder> <dem-folder> <output-folder> (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-x|--exp-rast] [-l|--limit-tiles <tiles-csv>]
+    ktpi.R ktpi-cli (--ktpi-function <ktpi-func>)... <feature-folder> <dem-folder-file> <output-folder> (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-x|--exp-rast] [-l|--limit-tiles <tiles-csv>]
     ktpi.R ktpi-sqs (--ktpi-feature <ktpi-feat>) (--ktpi-function <ktpi-func>)... (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-x|--exp-rast] [-l|--limit-tiles <tiles-csv>]
     ktpi.R [-h|--help]
     kpti.R --version
@@ -40,7 +40,7 @@ Options:
     ktpi-sqs                                creates a list of SQS messages on min/max column/row, dem calculation sizes, kernel from-to-step, orientation, and limited to a set of tiles
     feature-file                            input feature raster source tile (TMS standard, <col> & <row> numbers without leading zeros): [./<folder>/<col>/<row>.tif]
     feature-folder                          input feature raster source folder: [./<folder>]
-    dem-folder                              input DEM raster source folder: [./<folder>]
+    dem-folder-file                         input DEM raster source either folder OR file: [./<folder> OR ./<file>.tif]
     output-folder                           existing output data folder: [./<folder>]
     -d <dsize>, --dem-calc-size <dsize>     DEM cell size to calculate indices. ie. 5 = 5m [DEFAULT = raster cell size, maximum = cell size * tile cells] ( recalculated to be nearest evenly divisible into tile size: for (i in 1:(tilecells)) {if(tilecells%%i == 0) {print(i)}} ).
     -k <ksize>, --kernel-size <ksize>       kernel neighbourhood size, in ground units, to calculate ktpi indices. ie. 50 = 50m [DEFAULT = demCalcSize x 5]
@@ -76,23 +76,35 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     # gets the feature raster file path, and the tile and extension
     TMSFolderTileExt <- getTMSFolderZoomColRowExt(args$'feature-file')
 
-    # gets feature neighbouring tile files based on the kernel neighbourhood size
-    neighbourFileList <- getTMSTileFileNeighbours(TMSFolderTileExt$fileFolder,
+    # sets single file processing to false, a dem folder was provided therefore are adjacent tiles to include in the processing
+    singleFile <- FALSE
+
+    # if a dem file was provided then there is only a single tile to process
+    if (substr(args$'dem-folder-file',nchar(args$'dem-folder-file')-3,nchar(args$'dem-folder-file')) == '.tif') {
+        singleFile <-  TRUE
+        neighbourFileList <- c(args$'feature-file')
+        featureNeighbourRaster <- mergeRasters(neighbourFileList)
+        neighbourFileList <- c(args$'dem-folder-file')
+        demNeighbourRaster <- mergeRasters(neighbourFileList)
+    }
+
+    # if a dem folder was provided, get feature neighbouring tile files based on the kernel neighbourhood size & merges
+    if (singleFile == FALSE) {
+        neighbourFileList <- getTMSTileFileNeighbours(TMSFolderTileExt$fileFolder,
             TMSFolderTileExt$tileCol,
             TMSFolderTileExt$tileRow,
             TMSFolderTileExt$fileExt, args$'kernel-size')
+        featureNeighbourRaster <- mergeRasters(neighbourFileList)
+    }
 
-    # merges feature neighbouring tile files
-    featureNeighbourRaster <- mergeRasters(neighbourFileList)
-
-    # gets dem neighbouring tile files based on the kernel neighbourhood size
-    neighbourFileList <- getTMSTileFileNeighbours(args$'dem-folder',
+    # if a dem folder was provided, get dem neighbouring tile files based on the kernel neighbourhood size & merges
+    if (singleFile == FALSE) {
+        neighbourFileList <- getTMSTileFileNeighbours(args$'dem-folder-file',
             TMSFolderTileExt$tileCol,
             TMSFolderTileExt$tileRow,
             TMSFolderTileExt$fileExt, args$'kernel-size')
-
-    # merges dem neighbouring tile files
-    demNeighbourRaster <- mergeRasters(neighbourFileList)
+        demNeighbourRaster <- mergeRasters(neighbourFileList)
+    }
 
     # gets initial indice table with unique featid and cell counts
     indic <- getFeatureIdCount(TMSFolderTileExt$fileFolder,
@@ -119,7 +131,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     # runs terrain indices
     if (args$'terrain') {
         ktpiFunction <- "terrain"
-        eatTerr <- terrainIndices(args$'feature-file',
+        featTerr <- terrainIndices(args$'feature-file',
             featureNeighbourRaster,
             demNeighbourRaster,
             args$'output-folder',
@@ -220,7 +232,7 @@ if (args$'ktpi-cli') {
     if (tiles != "none") { 
         tiles <- read.csv(args$'limit-tiles', header=FALSE)$V1 
     }
-    createKtpiCLICommands(args$'ktpi-function', args$'feature-folder', args$'dem-folder', args$'output-folder', 
+    createKtpiCLICommands(args$'ktpi-function', args$'feature-folder', args$'dem-folder-file', args$'output-folder', 
         args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
         args$'raster-cells', args$'raster-cell-size', args$'dem-calc-size', args$'kernel-from', args$'kernel-to', 
         args$'kernel-step', args$'orientation', args$'exp-rast', tiles)
