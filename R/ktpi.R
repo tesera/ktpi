@@ -22,7 +22,7 @@ Options:
     --version                               show version.
     statistic                               runs statistic indices at the defined cell size. ie. statistic dsize=5, will develop statistic indices at the 5m cell size.
     terrain                                 runs terrain indices at the defined cell size. ie. terrain dsize=10, will develop terrain indices at the 10m cell size.
-    kpti                                    runs topographic position indices at the defined cell and kernel neighbourhood size. ie. ktpi dsize=20 kernel-size=800, will develop topographic position indices (sd & mean_diff) for a 20m dem cell size at the 800m kernel neighbourhood.
+    ktpi                                    runs topographic position indices at the defined cell and kernel neighbourhood size. ie. ktpi dsize=20 kernel-size=800, will develop topographic position indices (sd & mean_diff) for a 20m dem cell size at the 800m kernel neighbourhood.
     kaspSlp                                 runs slope indices at the defined orientation (across, uphill, downhill) at the defined cell and kernel neighbourhood size. ie. ktpi-aspect ktpislp uphill dsize=10 kernel-size=500, will develop slope indices for a 10m dem cell size at the 500m kernel ring for DEM values uphill of the kernel centroid. 
     kaspDir                                 runs direction indices at the defined orientation (across, uphill, downhill) at the defined cell and kernel neighbourhood size.
     kaspSDir                                runs sin direction indices at the defined orientation (across, uphill, downhill) at the defined cell and kernel neighbourhood size.
@@ -182,17 +182,17 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
 
     if (indicFeatCountInit != indicFeatCountPost) stop("processed stopped: input feature count is not equivalent to output feature count")
 
-    # featidColMinVal <- min(indic$featid[indic$featid>0])
-    # featidColMaxVal <- max(indic$featid[indic$featid>0])
-    # indicCol <- ncol(indic)
-    # indicColMinVal <- getIndicColMinVal(indic) # [,4:indicCol]
-    # indicColMaxVal <- getIndicColMaxVal(indic)
-    # indicColMeanVal <- getIndicColMeanVal(indic)
-    # indicColStdevVal <- getIndicColStdevVal(indic)
-    # print (indicColMinVal)
-    # print (indicColMaxVal)
-    # print (indicColMeanVal)
-    # print (indicColStdevVal)
+    featidColMinVal <- min(indic$featid[indic$featid>0])
+    featidColMaxVal <- max(indic$featid[indic$featid>0])
+    indicCol <- ncol(indic)
+    indicColMinVal <- getIndicColMinVal(indic) # [,4:indicCol]
+    indicColMaxVal <- getIndicColMaxVal(indic)
+    indicColMeanVal <- getIndicColMeanVal(indic)
+    indicColStdevVal <- getIndicColStdevVal(indic)
+    print (indicColMinVal)
+    print (indicColMaxVal)
+    print (indicColMeanVal)
+    print (indicColStdevVal)
 
     # round off numeric indic values to 6 decimal places
     is.num <- sapply(indic, is.numeric)
@@ -229,7 +229,7 @@ if (args$'ktpi-cli') {
 if (args$'ktpi-sqs') {
     tiles <- args$'limit-tiles'
     if (tiles != "none") { 
-        tiles <- read.csv(args$'limit-tiles', header=FALSE)$V1 
+        tiles <- read.csv(args$'limit-tiles', header=FALSE)$V1
     }
     createKtpiSQSMessages(args$'ktpi-feature', args$'ktpi-function', 
         args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
