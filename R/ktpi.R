@@ -189,10 +189,6 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     indicColMaxVal <- getIndicColMaxVal(indic)
     indicColMeanVal <- getIndicColMeanVal(indic)
     indicColStdevVal <- getIndicColStdevVal(indic)
-    print (indicColMinVal)
-    print (indicColMaxVal)
-    print (indicColMeanVal)
-    print (indicColStdevVal)
 
     # round off numeric indic values to 6 decimal places
     is.num <- sapply(indic, is.numeric)
