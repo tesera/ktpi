@@ -119,7 +119,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     # runs terrain indices
     if (args$'terrain') {
         ktpiFunction <- "terrain"
-        eatTerr <- terrainIndices(args$'feature-file',
+        featTerr <- terrainIndices(args$'feature-file',
             featureNeighbourRaster,
             demNeighbourRaster,
             args$'output-folder',
