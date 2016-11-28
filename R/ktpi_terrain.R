@@ -30,7 +30,7 @@ statisticIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRa
     dem <- demNeighbourRaster
 
     # calculate the dem aggregate/disaggregate factor for the analysis demCalcSize
-    dem2FeatFactor <- demCalcSize/featSize
+    dem2FeatFactor <- as.integer(demCalcSize/featSize)
     if (dem2FeatFactor > 1.0) {
         dem <- aggregate(dem, fact=c(dem2FeatFactor, dem2FeatFactor))
         dem <- disaggregate(dem, fact=c(dem2FeatFactor, dem2FeatFactor))
@@ -91,7 +91,7 @@ terrainIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRast
     dem <- demNeighbourRaster
 
     # calculate the dem aggregate/disaggregate factor for the analysis demCalcSize
-    dem2FeatFactor <- demCalcSize/featSize
+    dem2FeatFactor <- as.integer(demCalcSize/featSize)
     # aggregates dem to larger size
     if (dem2FeatFactor > 1.0) {
         dem <- aggregate(dem, fact = c(dem2FeatFactor, dem2FeatFactor))

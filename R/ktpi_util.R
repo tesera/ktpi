@@ -127,17 +127,17 @@ reCalculateDemCalcSize <- function(feat, calcSize){
     featSize <- xres(feat)
     if (calcSize < featSize) calcSize <- featSize
     featDim <- ncol(feat)
-    if (calcSize > (featSize * featDim)) calcSize <- featSize * featDim
-    if ((featDim*featSize)%%calcSize != 0) {
+    if (calcSize > as.integer(featSize * featDim)) calcSize <- as.integer(featSize * featDim)
+    if (as.integer(featDim*featSize)%%calcSize != 0) {
         calcSizeNeg <- calcSize
         calcSizePos <- calcSize
         repeat {
             calcSizeNeg <- calcSizeNeg - 1
-            if ((featDim*featSize)%%calcSizeNeg==0) break;
+            if (as.integer(featDim*featSize)%%calcSizeNeg==0) break;
             calcSizePos <- calcSizePos + 1
-            if ((featDim*featSize)%%calcSizePos==0) break;
+            if (as.integer(featDim*featSize)%%calcSizePos==0) break;
         }
-        if ((featDim*featSize)%%calcSizeNeg == 0) {
+        if (as.integer(featDim*featSize)%%calcSizeNeg == 0) {
             calcSize <- calcSizeNeg
         } else {
             calcSize <- calcSizePos

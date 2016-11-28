@@ -35,7 +35,7 @@ kaspIndices <- function(func = c("kaspSlp", "kaspDir",
     dem <- demNeighbourRaster
 
     # calculates the dem aggregate/disaggregate factor
-    dem2FeatFactor <- demCalcSize/featSize
+    dem2FeatFactor <- as.integer(demCalcSize/featSize)
     # aggregates dem to larger size
     if (dem2FeatFactor > 1.0) {
         dem <- aggregate(dem, fact=c(dem2FeatFactor, dem2FeatFactor))
