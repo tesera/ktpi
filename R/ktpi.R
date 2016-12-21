@@ -182,14 +182,8 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
 
     if (indicFeatCountInit != indicFeatCountPost) stop("processed stopped: input feature count is not equivalent to output feature count")
 
-    # featidColMinVal <- min(indic$featid[indic$featid>0])
-    # featidColMaxVal <- max(indic$featid[indic$featid>0])
-    # indicCol <- ncol(indic)
-    # indicColMinVal <- getIndicColMinVal(indic) # [,4:indicCol]
-    # indicColMaxVal <- getIndicColMaxVal(indic)
-    # indicColMeanVal <- getIndicColMeanVal(indic)
-    # indicColStdevVal <- getIndicColStdevVal(indic)
-
+    # turn scientific notation off
+    options(scipen=999)
     # round off numeric indic values to 6 decimal places
     is.num <- sapply(indic, is.numeric)
     indic[is.num] <- lapply(indic[is.num], round, 6)
