@@ -44,7 +44,7 @@ kaspIndices <- function(func = c("kaspSlp", "kaspDir",
     # sets default kernelSize if not defined or sets as integer
     # SHOULD CHANGE kernelSize to neighbourhoodSize
     if (is.null(kernelSize)) {
-        kernelSize <- kernelSize <- demCalcSize * 5
+        kernelSize <- demCalcSize * 5
     } else {
         kernelSize <- as.integer(kernelSize)
     }
@@ -375,6 +375,9 @@ kaspIndices <- function(func = c("kaspSlp", "kaspDir",
     } else if (dem2FeatFactor == 1.0) {
         demKasp <- demKasp
     }
+
+    # crop disaggregated dem to match feature
+    demKasp <- crop(demKasp, feat)
 
     # summarizes the tpi within the neighbourhood for every feat
     featKasp <- zonal(demKasp, feat, digits = 0, na.rm = TRUE)
