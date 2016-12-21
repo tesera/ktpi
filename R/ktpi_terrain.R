@@ -169,7 +169,7 @@ ktpiIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRaster,
     # sets default kernelSize if not defined or sets as integer
     # SHOULD CHANGE kernelSize to neighbourhoodSize
     if (is.null(kernelSize)) {
-        kernelSize <- kernelSize <- demCalcSize * 5
+        kernelSize <- demCalcSize * 5
     } else {
         kernelSize <- as.integer(kernelSize)
     }
@@ -209,6 +209,10 @@ ktpiIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRaster,
         } else if (dem2FeatFactor == 1.0) {
             demTpi <- demTpi
         }
+
+        # crop disaggregated dem to match feature
+        demTpi <- crop(demTpi, feat)
+
         # summarizes the tpi within the neighbourhood for every feat
         featTpi <- zonal(demTpi, feat, digits = 0, na.rm = TRUE)
         # adds new column based on the dem size, neighbourhood size, kernel size, and function
