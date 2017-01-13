@@ -37,12 +37,25 @@ This tool has been prepared to run in a docker container. The following steps wi
 # 1. calculates metrics (statistic/terrain/ktpi/kasp...) for the dem raster tile (dem.tif) in the ./dems folder
 # 2. summarizes metrics for each unique feature in a given feature raster tile (feature.tif)
 # 3. writes metrics per feature to a text file (.csv) in the ./output folder
-
+$ ./ktpi.R (statistic | terrain) <feature-file> <dem-folder> <output-folder> [-d|--dem-calc-size <dsize>] [-x|--exp-rast]
+$ ./ktpi.R ktpi <feature-file> <dem-folder> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [-x|--exp-rast]
+$ ./ktpi.R (kaspSlp | kaspDir | kaspSDir | kaspCDir | kaspSlpSDir | kaspSlpCDir | kaspSlpEle2 | kaspSlpEle2SDir | kaspSlpEle2CDir | kaspSlpLnEle | kaspSlpLnEleSlpSDir | kaspSlpLnEleSlpCDir) <feature-file> <dem-folder> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [-o|--orientation <orient>] [-x|--exp-rast]
+# examples
 $ ./ktpi.R statistic ./features/3/4.tif ./dems/ ./output --dem-calc-size=5
 $ ./ktpi.R terrain ./features/3/4.tif ./dems/ ./output -d 10 --exp-rast
 $ ./ktpi.R ktpi ./features/3/4.tif ./dems/ ./output -d 20 --kernel-size=2000
 $ ./ktpi.R kaspSDir ./features/3/4.tif ./dems/ ./output -d 10 -k 500 -o across
 $ ./ktpi.R kaspSlpLnEleSlpSDir ./features/3/4.tif ./dems/ ./output -d 20 -k 2000 -o uphill -x
+
+# build CLI commands
+$ ./ktpi.R ktpi-cli (--ktpi-function <ktpi-func>)... <feature-folder> <dem-folder> <output-folder> (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-x|--exp-rast] [-l|--limit-tiles <tiles-csv>]
+#example    
+$ ./ktpi.R ktpi-cli --ktpi-function statistic --ktpi-function terrain --ktpi-function ktpi --ktpi-function kaspSlp --ktpi-function kaspDir --ktpi-function kaspSDir --ktpi-function kaspCDir --ktpi-function kaspSlpSDir --ktpi-function kaspSlpCDir --ktpi-function kaspSlpEle2 --ktpi-function kaspSlpEle2SDir --ktpi-function kaspSlpEle2CDir --ktpi-function kaspSlpLnEle --ktpi-function kaspSlpLnEleSlpSDir --ktpi-function kaspSlpLnEleSlpCDir /Users/mk/Documents/Projects/sk-hris/plots /Users/mk/Documents/Projects/sk-hris/dems /Users/mk/Documents/Projects/sk-hris/output --tile-col-min 0 --tile-col-max 15 --tile-row-min 0 --tile-row-max 9 --raster-cells 600 --raster-cell-size 5 -d 5 -f 10 -t 20 -s 5 -d 5 -f 40 -t 100 -s 20 -d 10 -f 100 -t 200 -s 20 -d 10 -f 250 -t 500 -s 50 -d 10 -f 600 -t 1000 -s 100 -d 20 -f 1000 -t 2000 -s 200 -d 20 -f 2250 -t 2500 -s 250 -o across -o uphill -o downhill -l /Users/mk/Documents/Projects/sk-hris/plotsTiles.txt > /Users/mk/Documents/Projects/sk-hris/plotsCli.txt
+
+# build SQS messages
+$ ./ ktpi.R ktpi-sqs (--ktpi-feature <ktpi-feat>) (--ktpi-function <ktpi-func>)... (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-x|--exp-rast] [-l|--limit-tiles <tiles-csv>]
+#example
+$ ./ktpi.R ktpi-sqs --ktpi-feature plots --ktpi-function statistic --ktpi-function terrain --ktpi-function ktpi --ktpi-function kaspSlp --ktpi-function kaspDir --ktpi-function kaspSDir --ktpi-function kaspCDir --ktpi-function kaspSlpSDir --ktpi-function kaspSlpCDir --ktpi-function kaspSlpEle2 --ktpi-function kaspSlpEle2SDir --ktpi-function kaspSlpEle2CDir --ktpi-function kaspSlpLnEle --ktpi-function kaspSlpLnEleSlpSDir --ktpi-function kaspSlpLnEleSlpCDir --tile-col-min 0 --tile-col-max 15 --tile-row-min 0 --tile-row-max 9 --raster-cells 600 --raster-cell-size 5 -d 5 -f 10 -t 20 -s 5 -d 5 -f 40 -t 100 -s 20 -d 10 -f 100 -t 200 -s 20 -d 10 -f 250 -t 500 -s 50 -d 10 -f 600 -t 1000 -s 100 -d 20 -f 1000 -t 2000 -s 200 -d 20 -f 2250 -t 2500 -s 250 -o across -o uphill -o downhill -l /Users/mk/Documents/Projects/sk-hris/plotsTiles.txt > /Users/mk/Documents/Projects/sk-hris/plotsSqs_update.txt
     
 ````
 
