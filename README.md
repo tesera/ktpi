@@ -97,25 +97,25 @@ NOTE 4 - Features split across tiles: If a feature polygon in the subject tile i
 
 The following is a list of the *output indice values* summarized for each feature entity in a [tile] for a given [dem_cell_size] and [kernel_size]: ./output/[col]_[row]_[function name]_[kasp orientation]_[dem cell size]_[kernel size]_indices.csv
 
-#### DEM statistic indices: [col]_[row]_statistic__[dem cell size]__indices.csv
+#### DEM statistic indices: [col]\_[row]\_statistic\_\_[dem cell size]\_\_indices.csv
 * **tr_st_min_[dem_cell_size]**: minimum elevation within the feature for that DEM raster cell size
 * **tr_st_max_[dem_cell_size]**: maximum elevation within the feature for that DEM raster cell size
 * **tr_st_mean_[dem_cell_size]**: mean elevation within the feature for that DEM raster cell size
 * **tr_st_sd_[dem_cell_size]**: standard deviation of elevation values within the feature for that DEM raster cell size
 
-#### DEM terrain indices: [col]_[row]_terrain__[dem cell size]__indices.csv
-* **tr_te_tri_[dem_cell_size]**: Terrain Roughness Index within the feature for that DEM raster cell size
-* **tr_te_tpi_[dem_cell_size]**: Topographic Position Index within the feature for that DEM raster cell size
-* **tr_te_roughness_[dem_cell_size]**: roughness within the feature for that DEM raster cell size
-* **tr_te_slope_[dem_cell_size]**: slope within the feature for that DEM raster cell size
-* **tr_te_aspect_[dem_cell_size]**: aspect within the feature for that DEM raster cell size
+#### DEM terrain indices: [col]\_[row]\_terrain\_\_[dem cell size]\_\_indices.csv
+* **tr\_te\_tri\_[dem\_cell\_size]**: Terrain Roughness Index within the feature for that DEM raster cell size
+* **tr\_te\_tpi\_[dem\_cell\_size]**: Topographic Position Index within the feature for that DEM raster cell size
+* **tr\_te\_roughness\_[dem\_cell\_size]**: roughness within the feature for that DEM raster cell size
+* **tr\_te\_slope\_[dem\_cell\_size]**: slope within the feature for that DEM raster cell size
+* **tr\_te\_aspect\_[dem\_cell\_size]**: aspect within the feature for that DEM raster cell size
 
-#### DEM topographic position indices: [col]_[row]_ktpi__[dem cell size]_[kernel size]_indices.csv
-* **tr_tp_[dem_cell_size]m_[kernel_size]m_[kernel_cells]_mean_diff**: the mean, of the difference in elevation between the subject cell and the mean elevation of the kernel cells, of each cell within the feature for that kernel size and that DEM raster cell size
-* **tr_tp_[dem_cell_size]m_[kernel_size]m_[kernel_cells]_sd**: the mean, of the standard deviation of elevation of the kernel cells, of each cell within the feature for that kernel size and that DEM raster cell size
+#### DEM topographic position indices: [col]\_[row]\_ktpi\_\_[dem cell size]\_[kernel size]\_indices.csv
+* **tr\_tp\_[dem\_cell\_size]m\_[kernel\_size]m\_[kernel\_cells]\_mean\_diff**: the mean, of the difference in elevation between the subject cell and the mean elevation of the kernel cells, of each cell within the feature for that kernel size and that DEM raster cell size
+* **tr\_tp\_[dem\_cell\_size]m\_[kernel\_size]m\_[kernel\_cells]\_sd**: the mean, of the standard deviation of elevation of the kernel cells, of each cell within the feature for that kernel size and that DEM raster cell size
 
-#### DEM kernel aspect indices: [col]_[row]_kasp[func]_[kasp orientation]_[dem cell size]_[kernel size]_indices.csv
-* **tr_ka_[dem_cell_size]m_[kernel_size]m_[kernel_cells]_[kasp_function]_[orientation]**: the kasp aspect interactions as a function of slope, direction and/or elevation, of each cell within the feature for that kernel size and that DEM raster cell size
+#### DEM kernel aspect indices: [col]\_[row]\_kasp[func]\_[kasp orientation]\_[dem cell size]\_[kernel size]\_indices.csv
+* **tr\_ka\_[dem\_cell\_size]m\_[kernel\_size]m\_[kernel_cells]\_[kasp_function]\_[orientation]**: the kasp aspect interactions as a function of slope, direction and/or elevation, of each cell within the feature for that kernel size and that DEM raster cell size
 
 
 ## Raster Output
