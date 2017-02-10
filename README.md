@@ -271,7 +271,7 @@ Performing indice generation over a large area, over multiple [dem_cell_size] an
 * 1,312,000 CSV files: one CSV per CLI request
 * 12M records with 866 attributes (12 statistic + 18 terrain + 44 ktpi + 792 kasp)
 
-Besides the vast number of individual commands, spatial calculations of this magnitude require a scaled environment in which to calculate the topographic metrics as some can be rather computationally costly. This can be accomplished in a cluster computing environment allowing distribution of the data and calculations across a cluster of computing instances, and then aggregation of the data into a single database. Scaled indice generation service is available from [Tesera](http://tesera.com/), please contact [mkieser](https://github.com/mkieser).
+Besides the vast number of individual commands, spatial calculations of this magnitude require a scaled environment in which to calculate the topographic metrics as some can be rather computationally costly. This can be accomplished in a cluster computing environment allowing distribution of the data and calculations across a cluster of computing instances, and then aggregation of the data into a single dataset. Scaled indice generation service is available from [Tesera](http://tesera.com/), please contact [mkieser](https://github.com/mkieser). If you would like to attempt the scaled distribution on your own you can find the tools here [ktpi-distributed](https://github.com/tesera/ktpi-distributed).
 
 The following is an example of the CLI command for getting the required data from a S3 bucket, calculating a single indice calculation (ktpi) on a single feature tile (3/4.tif), outputting a log file, and putting all the output data to a S3 bucket:
 ````
