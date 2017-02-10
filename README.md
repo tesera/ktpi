@@ -4,6 +4,8 @@
 
 
 Kernel Topographic Position Indice (ktpi) is a R based utility to classify topography based on elevation statistics, terrain indices and topographic position indices from DEM (digital elevation model) data. This is based on the work of Jones, K. Bruce et al 2000; Weiss 2001; Moore, I.D. et. al., 1993; Stage and Salas, 2007; and Wilson and Gallant, 2005 in Terrain Analysis: Principles and Applications.
+![ktpi](/docs/imgs/6.png)
+![ktpi](/docs/imgs/7.png)
 
 ## Setting up ktpi with docker
 This tool has been prepared to run in a docker container. The following steps will help get started. Once you have a ktpi setup with docker, you can drop into a ktpi-ready environment at any time with the run command (step 3).
@@ -64,13 +66,20 @@ $ ./ktpi.R ktpi-sqs --ktpi-feature plots --ktpi-function statistic --ktpi-functi
 Metrics of topography are calculated for raster representations of polygon feature data. Calculations are performed over a digital elevation model with various cell moving window kernel using raster focal analysis, the calculations are then summarized using raster zonal analysis to each raster polygon feature by unique numeric value.
 
 1. DEM statistic indices are calculated using the R raster package zonal function (minimum, maximum, mean, standard deviation of elevation values) for each feature.
+![standard deviation](/docs/imgs/sd.png)
 
 2. DEM terrain indices are calculated using the R raster package terrain function (aspect, roughness, slope, TPI, and TRI) which implements an 8 cell kernel focal analysis, then summarizes the indices (mean) using raster zonal analysis to each raster polygon feature by unique numeric value. The terrain function implementation of flowdir was not used as the function has a built in randomization when flow direction has multiple possibilities, and the 2^n directions cannot be summarized/averaged.
+![slope](/docs/imgs/slope.png)
+![TPI](/docs/imgs/tpi.png)
 
 3. DEM kernel topographic position indices are calculated using the R raster package focal function (mean, standard deviation) which implements variable cell kernel using raster focal analysis, then summarizes the indices (mean) using raster zonal analysis to each raster feature with unique numeric value.
+![ktpi:kernel=30](/docs/imgs/ktpi_6_30.png)
+![ktpi:kernel=60](/docs/imgs/ktpi_6_60.png)
 
 4. DEM kernel aspect indices (Al Stage aspect slope, direction and elevation interactions) are calculated using the R raster package focal function which implements variable cell kernel ring raster focal analysis, then summarizes the indices (mean) using raster zonal analysis to each raster feature with unique numeric value.
-
+![Al Stage kernel aspect-direction](/docs/imgs/kaspDir.png)
+![Al Stage kernel aspect-slope](/docs/imgs/kaspSlp.png)
+![Al Stage kernel slope*elevation^2*cos(direction)](/docs/imgs/kaspSlpEle2CDir.png)
 
 ## Input Data Requirements
 
@@ -80,9 +89,11 @@ The following outlines the process for structuring the input data properly for d
 * **Project Area**: Build a project area polygon containing the project area plus sufficient area beyond equal to the largest focal kernel, ie. 2000m, to eliminate edge effect.
 * **Tile Structure**: Develop a uniform size tile at the beginning as a function of the project area.
 * **DEM raster**: DEM raster data over the entire region, ie. 1m, 2m, 5m, or 10m. DEM data will automatically be aggregated, as specified, for larger dem cell calculations.
+![DEM](/docs/imgs/dem_original.png)
 * **DEM raster tiling**: Restructure the DEM raster data to the tile structure. /input/dems/[column folder]/[row file].tif
 * **Feature polygon**: Polygon features with UNIQUE RASTER identifier.
 * **Feature raster**: Corresponding raster format of the feature polygon with the raster cell value as its unique integer identifier and will be used for the zonal analysis (NOTE: Feature rasters must coincide with DEM raster, origin and cell size).
+![features](/docs/imgs/features.png)
 * **Feature raster tiling**: Restructure the feature unit data to the tile structure. /input/features/[column folder]/[row file].tif
 
 NOTE 1 - DEM cell size VS. kernel size: It is HIGHLY recommended that at larger [kernel size]s you choose a larger [dem cell size] that is a multiple of the original dem cell size. When the kernel is over 100 times the dem cell size the KTPI script takes significantly longer to process, and frankly could crash as your kernel focal analysis would contain 40000 cells (a square 200 cells E-W and 200 cells N-S).
@@ -292,3 +303,5 @@ aws s3 cp s3://1604-tpi/test1/input/features/2/3.tif ./features/2/3.tif && aws s
     * direction: 0 - 360
     * sine direction: -1 - +1
     * cosine direction: -1 - +1
+
+![hillshade](/docs/imgs/dem_hillshade.png)
