@@ -1,18 +1,22 @@
 #!/usr/bin/env Rscript
+# ktpi.R ktpi-json --ktpi-function statistic /feat/ /dem/ --extension tif /ref/ --tile-col-min 1 --tile-col-max 3 --tile-row-min 1 --tile-row-max 2 --raster-cells 2000 --raster-cell-size 1 -d 1,5,10,20 -l none
 
-library(docopt)
+suppressMessages(library(docopt))
+suppressMessages(library(jsonlite))
 source("./ktpi_util.R")
 source("./ktpi_terrain.R")
 source("./ktpi_aspect.R")
 
 '
 Usage:
-    ktpi.R (statistic | terrain) <feature-file> <dem-folder> <output-folder> [-d|--dem-calc-size <dsize>] [-x|--exp-rast]
-    ktpi.R ktpi <feature-file> <dem-folder> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [-x|--exp-rast]
-    ktpi.R (kaspSlp | kaspDir | kaspSDir | kaspCDir | kaspSlpSDir | kaspSlpCDir | kaspSlpEle2 | kaspSlpEle2SDir | kaspSlpEle2CDir | kaspSlpLnEle | kaspSlpLnEleSlpSDir | kaspSlpLnEleSlpCDir) <feature-file> <dem-folder> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [-o|--orientation <orient>] [-x|--exp-rast]
+    ktpi.R (statistic | terrain) <feature-file> <dem-folder> <output-folder> [-d|--dem-calc-size <dsize>] [--exp-rast]
+    ktpi.R ktpi <feature-file> <dem-folder> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [--exp-rast]
+    ktpi.R (kaspSlp | kaspDir | kaspSDir | kaspCDir | kaspSlpSDir | kaspSlpCDir | kaspSlpEle2 | kaspSlpEle2SDir | kaspSlpEle2CDir | kaspSlpLnEle | kaspSlpLnEleSlpSDir | kaspSlpLnEleSlpCDir) <feature-file> <dem-folder> <output-folder> [-d <dsize>] [-k|--kernel-size <ksize>] [-o|--orientation <orient>] [--exp-rast]
     ktpi.R neighbourhood (-c <fcol>) (-r <frow>) (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-k <ksize>)
-    ktpi.R ktpi-cli (--ktpi-function <ktpi-func>)... <feature-folder> <dem-folder> <output-folder> (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-x|--exp-rast] [-l|--limit-tiles <tiles-csv>]
-    ktpi.R ktpi-sqs (--ktpi-feature <ktpi-feat>) (--ktpi-function <ktpi-func>)... (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-x|--exp-rast] [-l|--limit-tiles <tiles-csv>]
+    ktpi.R neighbours (-c <fcol>) (-r <frow>) [--folder <pre>] [--extension <app>] (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-k <ksize>)
+    ktpi.R ktpi-cli (--ktpi-function <ktpi-func>)... <feature-folder> <dem-folder> <output-folder> (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [--exp-rast] [-l|--limit-tiles <tiles-csv>]
+    ktpi.R ktpi-json (--ktpi-function <ktpi-func>)... <feature-folder> <dem-folder> (--extension <app>) <output-folder> (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [--exp-rast] [-l|--limit-tiles <tiles-csv>]
+    ktpi.R ktpi-sqs (--ktpi-feature <ktpi-feat>) (--ktpi-function <ktpi-func>)... (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [--exp-rast] [-l|--limit-tiles <tiles-csv>]
     ktpi.R [-h|--help]
     kpti.R --version
     ktpi.R info
@@ -44,7 +48,7 @@ Options:
     output-folder                           existing output data folder: [./<folder>]
     -d <dsize>, --dem-calc-size <dsize>     DEM cell size to calculate indices. ie. 5 = 5m [DEFAULT = raster cell size, maximum = cell size * tile cells] ( recalculated to be nearest evenly divisible into tile size: for (i in 1:(tilecells)) {if(tilecells%%i == 0) {print(i)}} ).
     -k <ksize>, --kernel-size <ksize>       kernel neighbourhood size, in ground units, to calculate ktpi indices. ie. 50 = 50m [DEFAULT = demCalcSize x 5]
-    -x, --exp-rast                          exports indices rasters.
+    --exp-rast                              exports indices rasters.
     -c <fcol>, --tile-col <fcol>            tile column
     -r <frow>, --tile-row <frow>            tile row
     -o <orient>, --orientation <orient>     ktpi-aspect kernel orientation: across, uphill, downhill
@@ -53,10 +57,12 @@ Options:
     --raster-cell-size <csize>              raster cell size (m)
     --ktpi-feature <ktpi-feat>              feature type to generate CLI arguments
     --ktpi-function <ktpi-func>             ktpi functions to generate CLI arguments
-    --tile-col-min <cmin>                   tile min column value
-    --tile-col-max <cmax>                   tile max column value
-    --tile-row-min <rmin>                   tile min row value
-    --tile-row-max <rmax>                   tile max row value
+    --tile-col-min <cmin>, -w <cmin>        tile min column value
+    --tile-col-max <cmax>, -x <cmax>        tile max column value
+    --tile-row-min <rmin>, -y <rmin>        tile min row value
+    --tile-row-max <rmax>, -z <rmax>        tile max row value
+    --folder <pre>, -p <pre>                prepended tile path directory (/folder/subfolder/)
+    --extension <ext>, -a <ext>             appended tile file extension (.tif)
     -f <kfrom>, --kernel-from <kfrom>       kernel from range
     -t <kto>, --kernel-to <kto>             kernel to ranged
     -s <kstep>, --kernel-step <kstep>       kernel range step
@@ -205,12 +211,29 @@ if (args$'neighbourhood') {
         args$'raster-cells', args$'raster-cell-size', args$'kernel-size')
 }
 
+if (args$'neighbours') {
+    getNeighbours(args$'folder', args$'tile-col', args$'tile-row', args$'extension',
+        args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
+        args$'raster-cells', args$'raster-cell-size', args$'kernel-size')
+}
+
 if (args$'ktpi-cli') {
     tiles <- args$'limit-tiles'
     if (tiles != "none") { 
         tiles <- read.csv(args$'limit-tiles', header=FALSE)$V1 
     }
     createKtpiCLICommands(args$'ktpi-function', args$'feature-folder', args$'dem-folder', args$'output-folder', 
+        args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
+        args$'raster-cells', args$'raster-cell-size', args$'dem-calc-size', args$'kernel-from', args$'kernel-to', 
+        args$'kernel-step', args$'orientation', args$'exp-rast', tiles)
+}
+
+if (args$'ktpi-json') {
+    tiles <- args$'limit-tiles'
+    if (tiles != "none") { 
+        tiles <- read.csv(args$'limit-tiles', header=FALSE)$V1 
+    }
+    createKtpiJSONMessages(args$'ktpi-function', args$'feature-folder', args$'dem-folder', args$'extension', args$'output-folder', 
         args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
         args$'raster-cells', args$'raster-cell-size', args$'dem-calc-size', args$'kernel-from', args$'kernel-to', 
         args$'kernel-step', args$'orientation', args$'exp-rast', tiles)
