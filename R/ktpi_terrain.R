@@ -1,10 +1,11 @@
 library(rgdal, quietly = TRUE)
 library(raster, quietly = TRUE)
 
-statisticIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRaster, outputFolder, 
-    demCalcSize, exportRasters, tileCol, tileRow) {
+statisticIndices <- function(featureFolder, tileCol, tileRow, extension, featureNeighbourRaster, demNeighbourRaster, outputFolder, 
+    demCalcSize, exportRasters) {
     # gets feature raster
-    feat <- raster(featureFile)
+    feat <- paste(featureFolder, "/", tileCol, "/", tileRow, extension, sep="")
+    feat <- raster(feat)
     # copies feature raster for extent
     featExt <- feat
     # initializes the feature statistics for the featureFile
@@ -59,10 +60,11 @@ statisticIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRa
     return(featStat)
 }
 
-terrainIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRaster, outputFolder, 
-    demCalcSize, exportRasters, tileCol, tileRow) {
+terrainIndices <- function(featureFolder, tileCol, tileRow, extension, featureNeighbourRaster, demNeighbourRaster, outputFolder, 
+    demCalcSize, exportRasters) {
     # gets feature raster
-    feat <- raster(featureFile)
+    feat <- paste(featureFolder, "/", tileCol, "/", tileRow, extension, sep="")
+    feat <- raster(feat)
     # copies feature raster for extent
     featExt <- feat
     # initializes the feature statistics for the tile
@@ -132,10 +134,11 @@ terrainIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRast
     return(featTerr)
 }
 
-ktpiIndices <- function(featureFile, featureNeighbourRaster, demNeighbourRaster, outputFolder, 
-    demCalcSize, kernelSize, exportRasters, tileCol, tileRow) {
+ktpiIndices <- function(featureFolder, tileCol, tileRow, extension, featureNeighbourRaster, demNeighbourRaster, outputFolder, 
+    demCalcSize, kernelSize, exportRasters) {
     # gets feature raster
-    feat <- raster(featureFile)
+    feat <- paste(featureFolder, "/", tileCol, "/", tileRow, extension, sep="")
+    feat <- raster(feat)
     # copies feature raster for extent
     featExt <- feat
     # initializes feat datastore

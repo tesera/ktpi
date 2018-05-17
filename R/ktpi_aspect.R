@@ -5,12 +5,13 @@ kaspIndices <- function(func = c("kaspSlp", "kaspDir",
     "kaspSDir", "kaspCDir", "kaspSlpSDir", "kaspSlpCDir",
     "kaspSlpEle2", "kaspSlpEle2SDir", "kaspSlpEle2CDir",
     "kaspSlpLnEle", "kaspSlpLnEleSlpSDir", "kaspSlpLnEleSlpCDir"),
-    featureFile, featureNeighbourRaster, demNeighbourRaster, outputFolder, 
-    demCalcSize, kernelSize, exportRasters, tileCol, tileRow,
+    featureFolder, tileCol, tileRow, extension, featureNeighbourRaster, demNeighbourRaster, outputFolder, 
+    demCalcSize, kernelSize, exportRasters,
     orientation = c("across", "uphill", "downhill")) {
 
     # gets feature raster
-    feat <- raster(featureFile)
+    feat <- paste(featureFolder, "/", tileCol, "/", tileRow, extension, sep="")
+    feat <- raster(feat)
     # copies feature raster for extent
     featExt <- feat
     # initializes feat datastore
