@@ -193,7 +193,7 @@ getNeighbourhoodCR <- function(tileCol, tileRow, minCol, maxCol, minRow, maxRow,
     return(neighbourhoodCRchar)
 }
 
-getNeighbours <- function(prepend = "", tilecol = NULL, tilerow = NULL, append = "", tilecolmin = NULL, tilecolmax = NULL, tilerowmin = NULL, tilerowmax = NULL, rastercells = NULL, rastercellsize = NULL, neighbourhood = NULL) {
+getNeighbours <- function(prepend = "", tilecol = NULL, tilerow = NULL, append = "", tilecolmin = NULL, tilecolmax = NULL, tilerowmin = NULL, tilerowmax = NULL, rastercells = NULL, rastercellsize = NULL, neighbourhood = NULL, tiles) {
   tilecol <- as.integer(tilecol)
   tilerow <- as.integer(tilerow)
   tilecolmin <- as.integer(tilecolmin)
@@ -201,7 +201,7 @@ getNeighbours <- function(prepend = "", tilecol = NULL, tilerow = NULL, append =
   tilerowmin <- as.integer(tilerowmin)
   tilerowmax <- as.integer(tilerowmax)
 
-  if (is.null(rastercells)) {
+  if (is.null(neighbourhood)) {
     tilering <- 1
   } else {
     rastercells <- as.integer(rastercells)
@@ -218,8 +218,11 @@ getNeighbours <- function(prepend = "", tilecol = NULL, tilerow = NULL, append =
     for (row in (-1 * tilering):tilering) {
       neighbourrow <- as.integer(tilerow) + row
       if ((neighbourcol >= tilecolmin && neighbourcol <= tilecolmax && neighbourrow >= tilerowmin && neighbourrow <= tilerowmax)) {
-          neighbour <- paste(prepend, "/", neighbourcol, "/", neighbourrow, append, sep = "")
+        tile <- paste(neighbourcol, neighbourrow, sep="/")
+        if (any(tile==tiles) | tiles == "none" ) { 
+          neighbour <- paste(prepend, neighbourcol, "/", neighbourrow, append, sep = "")
           neighbourList <- c(neighbourList, neighbour)
+        }
       }
     }
   }
@@ -239,9 +242,9 @@ getIndicColMeanVal <- function(indic) sapply(indic, mean, na.rm = TRUE)
 getIndicColStdevVal <- function(indic) sapply(indic, sd, na.rm = TRUE)
 
 # create all the ktpi CLI arguments based on the user request
-createKtpiCLICommands <- function(ktpiFunction, featureFolder, demFolder, outputFolder, 
+createKtpiCLICommands <- function(ktpiFunction, featureFolder, demFolder, extension, outputFolder, 
     tileColMin, tileColMax, tileRowMin, tileRowMax, rasterCells, rasterCellSize, 
-    demCalcSize, kernelFrom, kernelTo, kernelStep, orientations, exportRasters = FALSE, tiles) {
+    demCalcSize, kernelFrom, kernelTo, kernelStep, orientations, exportRasters = FALSE, tilesfile, tiles) {
     ktpiScr <- "./ktpi.R"
     kernelFrom <- as.integer(kernelFrom)
     kernelTo <- as.integer(kernelTo)
@@ -258,9 +261,9 @@ createKtpiCLICommands <- function(ktpiFunction, featureFolder, demFolder, output
                     featureFile <- paste(featureFolder, "/", CR, ".tif", sep = "")
                     if (func == "statistic" | func == "terrain") {
                         for (size in unique(demCalcSize)){
-                            kernel <- 1
-                            additionalArgs <- paste("-d", size, exportRasters, sep = " ")
-                            ktpiCLICommand <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                            # additionalArgs <- paste("-d", size, exportRasters, sep = " ")
+                            # ktpiCLICommand <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                            ktpiCLICommand <- paste("ktpi.R", func, "-p", featureFolder, "-q", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileColMax, "-m", rasterCellSize, "-n", rasterCells, "-d", size, "-l", tilesfile, "-u", outputFolder, exportRasters)
                             ktpiCLICommands <- c(ktpiCLICommands, ktpiCLICommand)
                         }
                     }
@@ -268,8 +271,9 @@ createKtpiCLICommands <- function(ktpiFunction, featureFolder, demFolder, output
                         for (size in 1:sizeCount) {
                             kernels <- seq(kernelFrom[size], kernelTo[size], by = kernelStep[size])
                             for (kernel in kernels) {
-                                additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, exportRasters, sep = " ")
-                                ktpiCLICommand <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                                # additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, exportRasters, sep = " ")
+                                # ktpiCLICommand <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                                ktpiCLICommand <- paste("ktpi.R", func, "-p", featureFolder, "-q", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileColMax, "-m", rasterCellSize, "-n", rasterCells, "-d", demCalcSize[size], "-k", kernel, "-l", tilesfile, "-u", outputFolder, exportRasters)
                                 ktpiCLICommands <- c(ktpiCLICommands, ktpiCLICommand)
                             }
                         }
@@ -284,9 +288,10 @@ createKtpiCLICommands <- function(ktpiFunction, featureFolder, demFolder, output
                                 neighbourhoodCR <- getNeighbourhoodCR(col, row, tileColMin, tileColMax, tileRowMin, tileRowMax, 
                                     rasterCells, rasterCellSize, kernel)
                                 for (orient in orientations) {
-                                    orientation <- paste("-o", orient, sep = " ")
-                                    additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, orientation, exportRasters, sep = " ")
-                                    ktpiCLICommand <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                                    # orientation <- paste("-o", orient, sep = " ")
+                                    # additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, orientation, exportRasters, sep = " ")
+                                    # ktpiCLICommand <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                                    ktpiCLICommand <- paste("ktpi.R", func, "-p", featureFolder, "-q", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileColMax, "-m", rasterCellSize, "-n", rasterCells, "-d", demCalcSize[size], "-k", kernel, "-o", orient, "-l", tilesfile, "-u", outputFolder, exportRasters)
                                     ktpiCLICommands <- c(ktpiCLICommands, ktpiCLICommand)
                                 }
                             }
@@ -302,11 +307,7 @@ createKtpiCLICommands <- function(ktpiFunction, featureFolder, demFolder, output
 # create all the ktpi CLI arguments based on the user request
 createKtpiJSONMessages <- function(ktpiFunction, featureFolder, demFolder, extension, outputFolder, 
     tileColMin, tileColMax, tileRowMin, tileRowMax, rasterCells, rasterCellSize, 
-    demCalcSize, kernelFrom, kernelTo, kernelStep, orientations, exportRasters = FALSE, tiles) {
-    ktpiScr <- "ktpi.R"
-    print("KtpiJSON")
-    demCalcSize <- as.list(strsplit(demCalcSize,",")[[1]])
-    print(demCalcSize)
+    demCalcSize, kernelFrom, kernelTo, kernelStep, orientations, exportRasters = FALSE, tilesfile, tiles) {
     kernelFrom <- as.integer(kernelFrom)
     kernelTo <- as.integer(kernelTo)
     kernelStep <- as.integer(kernelStep)
@@ -319,18 +320,17 @@ createKtpiJSONMessages <- function(ktpiFunction, featureFolder, demFolder, exten
             for (row in tileRowMin:tileRowMax) {
                 if (tiles == "none" | paste(col, row, sep="/") %in% tiles) {
                     CR <- paste(col, row, sep = "/")
-                    featureFile <- paste(featureFolder, "/", CR, extension, sep = "")
+                    featureFile <- paste(featureFolder, CR, extension, sep = "")
                     if (func == "statistic" | func == "terrain") {
                         for (size in unique(demCalcSize)) {
-                            print("unique")
-                            print(size)
                             kernel <- 1
                             ktpiJSONMessage <- data.frame(getdata = character(1), runcommand = character(1), stringsAsFactors = FALSE)
-                            featureNeighbourCmd <- paste("ktpi.R neighbours -c", col, "-r", row, "-p", featureFolder, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "--raster-cells", rasterCells, "--raster-cell-size", rasterCellSize, "-k", kernel, sep = " ")
-                            demNeighbourCmd <- paste("ktpi.R neighbours -c", col, "-r", row, "-p", demFolder, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "--raster-cells", rasterCells, "--raster-cell-size", rasterCellSize, "-k", kernel, sep = " ")
+                            # ktpi.R neighbours -p ../test/exp-input/features/ -c 3 -r 4 -a .tif -w 2 -x 4 -y 3 -z 5 -m 1 -n 2000 -k 100 -l tiles.txt
+                            featureNeighbourCmd <- paste("ktpi.R neighbours -p", featureFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "-m", rasterCellSize, "-n", rasterCells, "-k", kernel, "-l", tilesfile, sep = " ")
+                            demNeighbourCmd <- paste("ktpi.R neighbours -p", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "-m", rasterCellSize, "-n", rasterCells, "-k", kernel, "-l", tilesfile, sep = " ")
                             ktpiJSONMessage$getdata <- list(c(featureNeighbourCmd, demNeighbourCmd))
-                            additionalArgs <- paste("-d", size, exportRasters, sep = " ")
-                            runCmd <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                            # ktpi.R statistic -p ../test/exp-input/features/ -q ../test/exp-input/dems/ -c 3 -r 4 -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -l tiles.txt -u ../
+                            runCmd <- paste("ktpi.R", func, "-p", featureFolder, "-q", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileColMax, "-m", rasterCellSize, "-n", rasterCells, "-d", size, "-l", tilesfile, "-u", outputFolder, exportRasters)
                             ktpiJSONMessage$runcommand <- c(runCmd)
                             ktpiJSONMessages <- rbind(ktpiJSONMessages, ktpiJSONMessage)
                         }
@@ -340,11 +340,14 @@ createKtpiJSONMessages <- function(ktpiFunction, featureFolder, demFolder, exten
                             kernels <- seq(kernelFrom[size], kernelTo[size], by = kernelStep[size])
                             for (kernel in kernels) {
                                 ktpiJSONMessage <- data.frame(getdata = character(1), runcommand = character(1), stringsAsFactors = FALSE)
-                                featureNeighbourCmd <- paste("ktpi.R neighbours -c", col, "-r", row, "-p", featureFolder, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "--raster-cells", rasterCells, "--raster-cell-size", rasterCellSize, "-k", kernel, sep = " ")
-                                demNeighbourCmd <- paste("ktpi.R neighbours -c", col, "-r", row, "-p", demFolder, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "--raster-cells", rasterCells, "--raster-cell-size", rasterCellSize, "-k", kernel, sep = " ")
+                                # ktpi.R neighbours -p ../test/exp-input/features/ -c 3 -r 4 -a .tif -w 2 -x 4 -y 3 -z 5 -m 1 -n 2000 -k 100 -l tiles.txt
+                                featureNeighbourCmd <- paste("ktpi.R neighbours -p", featureFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "-m", rasterCellSize, "-n", rasterCells, "-k", kernel, "-l", tilesfile, sep = " ")
+                                demNeighbourCmd <- paste("ktpi.R neighbours -p", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "-m", rasterCellSize, "-n", rasterCells, "-k", kernel, "-l", tilesfile, sep = " ")
                                 ktpiJSONMessage$getdata <- list(c(featureNeighbourCmd, demNeighbourCmd))
-                                additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, exportRasters, sep = " ")
-                                runCmd <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                                # additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, exportRasters, "-l", tilesfile, sep = " ")
+                                # runCmd <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                                # ktpi.R ktpi -p ../test/exp-input/features/ -q ../test/exp-input/dems/ -c 3 -r 4 -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -k 100 -l tiles.txt -u ../
+                                runCmd <- paste("ktpi.R", func, "-p", featureFolder, "-q", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileColMax, "-m", rasterCellSize, "-n", rasterCells, "-d", demCalcSize[size], "-k", kernel, "-l", tilesfile, "-u", outputFolder, exportRasters)
                                 ktpiJSONMessage$runcommand <- c(runCmd)
                                 ktpiJSONMessages <- rbind(ktpiJSONMessages, ktpiJSONMessage)
                             }
@@ -360,13 +363,16 @@ createKtpiJSONMessages <- function(ktpiFunction, featureFolder, demFolder, exten
                                 neighbourhoodCR <- getNeighbourhoodCR(col, row, tileColMin, tileColMax, tileRowMin, tileRowMax, 
                                     rasterCells, rasterCellSize, kernel)
                                 for (orient in orientations) {
-                                    orientation <- paste("-o", orient, sep = " ")
+                                    # orientation <- paste("-o", orient, sep = " ")
                                     ktpiJSONMessage <- data.frame(getdata = character(1), runcommand = character(1), stringsAsFactors = FALSE)
-                                    featureNeighbourCmd <- paste("ktpi.R neighbours -c", col, "-r", row, "-p", featureFolder, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "--raster-cells", rasterCells, "--raster-cell-size", rasterCellSize, "-k", kernel, sep = " ")
-                                    demNeighbourCmd <- paste("ktpi.R neighbours -c", col, "-r", row, "-p", demFolder, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "--raster-cells", rasterCells, "--raster-cell-size", rasterCellSize, "-k", kernel, sep = " ")
+                                    # ktpi.R neighbours -p ../test/exp-input/features/ -c 3 -r 4 -a .tif -w 2 -x 4 -y 3 -z 5 -m 1 -n 2000 -k 100 -l tiles.txt
+                                    featureNeighbourCmd <- paste("ktpi.R neighbours -p", featureFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "-m", rasterCellSize, "-n", rasterCells, "-k", kernel, "-l", tilesfile, sep = " ")
+                                    demNeighbourCmd <- paste("ktpi.R neighbours -p", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "-m", rasterCellSize, "-n", rasterCells, "-k", kernel, "-l", tilesfile, sep = " ")
                                     ktpiJSONMessage$getdata <- list(c(featureNeighbourCmd, demNeighbourCmd))
-                                    additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, orientation, exportRasters, sep = " ")
-                                    runCmd <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                                    # additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, orientation, exportRasters, "-l", tilesfile, sep = " ")
+                                    # runCmd <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
+                                    # ktpi.R kaspSlp -p ../test/exp-input/features/ -q ../test/exp-input/dems/ -c 3 -r 4 -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -k 100 -o across -l tiles.txt -u ../
+                                    runCmd <- paste("ktpi.R", func, "-p", featureFolder, "-q", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileColMax, "-m", rasterCellSize, "-n", rasterCells, "-d", demCalcSize[size], "-k", kernel, "-o", orient, "-l", tilesfile, "-u", outputFolder, exportRasters)
                                     ktpiJSONMessage$runcommand <- c(runCmd)
                                     ktpiJSONMessages <- rbind(ktpiJSONMessages, ktpiJSONMessage)
                                 }
@@ -378,71 +384,4 @@ createKtpiJSONMessages <- function(ktpiFunction, featureFolder, demFolder, exten
         }
     }
     writeLines(toJSON(ktpiJSONMessages, pretty = TRUE))
-}
-
-
-# create all the ktpi SQS messages based on the user request
-createKtpiSQSMessages <- function(ktpiFeature, ktpiFunction, 
-    tileColMin, tileColMax, tileRowMin, tileRowMax, rasterCells, rasterCellSize, 
-    demCalcSize, kernelFrom, kernelTo, kernelStep, orientations, exportRasters = FALSE, tiles = "none") {
-    feat <- ktpiFeature
-    kernelFrom <- as.integer(kernelFrom)
-    kernelTo <- as.integer(kernelTo)
-    kernelStep <- as.integer(kernelStep)
-    if (exportRasters) { exportRasters <- "--exp-rast" } else { exportRasters <- "" }
-    sizeCount <- length(demCalcSize)
-    i <- 0
-    for (func in ktpiFunction) {
-        for (col in tileColMin:tileColMax) {
-            ktpiSQSMessages <- data.frame(feature = character(), indice = character(), 
-                feature_tile = character(), neighbour_tiles = character(), args = character(), stringsAsFactors = FALSE)
-            for (row in tileRowMin:tileRowMax) {
-                if (tiles == "none" | paste(col,row,sep="/") %in% tiles) { 
-                    CR <- paste(col, row, sep = "/")
-                    if (func == "statistic" | func == "terrain") {
-                        for (size in unique(demCalcSize)){
-                            kernel <- 1
-                            neighbourhoodCR <- getNeighbourhoodCR(col, row, tileColMin, tileColMax, tileRowMin, tileRowMax, 
-                                rasterCells, rasterCellSize, kernel)
-                            additionalArgs <- paste("-d", size, exportRasters, sep = " ")
-                            ktpiSQSMessages <- rbind(ktpiSQSMessages, data.frame(feature = feat, indice = func, 
-                                feature_tile = CR, neighbour_tiles = neighbourhoodCR, args = additionalArgs))
-                        }
-                    }
-                    if (func == "ktpi") {
-                        for (size in 1:sizeCount) {
-                            kernels <- seq(kernelFrom[size], kernelTo[size], by = kernelStep[size])
-                            for (kernel in kernels) {
-                                # i <- i + 1
-                                neighbourhoodCR <- getNeighbourhoodCR(col, row, tileColMin, tileColMax, tileRowMin, tileRowMax, 
-                                    rasterCells, rasterCellSize, kernel)
-                                additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, exportRasters, sep = " ")
-                                ktpiSQSMessages <- rbind(ktpiSQSMessages, data.frame(feature = feat, indice = func, 
-                                    feature_tile = CR, neighbour_tiles = neighbourhoodCR, args = additionalArgs))
-                            }
-                        }
-                    }
-                    if (func == "kaspSlp" | func == "kaspDir" | 
-                        func == "kaspSDir" | func == "kaspCDir" | func == "kaspSlpSDir" | func == "kaspSlpCDir" | 
-                        func == "kaspSlpEle2" | func == "kaspSlpEle2SDir" | func == "kaspSlpEle2CDir" | 
-                        func == "kaspSlpLnEle" | func == "kaspSlpLnEleSlpSDir" | func == "kaspSlpLnEleSlpCDir") {
-                        for (size in 1:sizeCount) {
-                            kernels <- seq(kernelFrom[size], kernelTo[size], by = kernelStep[size])
-                            for (kernel in kernels) {
-                                neighbourhoodCR <- getNeighbourhoodCR(col, row, tileColMin, tileColMax, tileRowMin, tileRowMax, 
-                                    rasterCells, rasterCellSize, kernel)
-                                for (orient in orientations) {
-                                    orientation <- paste("-o", orient, sep = " ")
-                                    additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, orientation, exportRasters, sep = " ")
-                                    ktpiSQSMessages <- rbind(ktpiSQSMessages, data.frame(feature = feat, indice = func, feature_tile = CR, neighbour_tiles = neighbourhoodCR, args = additionalArgs))
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            write.table(ktpiSQSMessages, sep = ",", append = TRUE, row.names = FALSE, col.names = FALSE, quote = FALSE)
-            warnings()
-        }
-    }
 }
