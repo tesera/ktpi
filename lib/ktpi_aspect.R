@@ -1,5 +1,5 @@
-library(rgdal, quietly = TRUE)
-library(raster, quietly = TRUE)
+suppressMessages(library(rgdal, quietly = TRUE))
+suppressMessages(library(raster, quietly = TRUE))
 
 kaspIndices <- function(func = c("kaspSlp", "kaspDir", 
     "kaspSDir", "kaspCDir", "kaspSlpSDir", "kaspSlpCDir",

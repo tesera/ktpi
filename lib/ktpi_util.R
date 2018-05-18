@@ -1,5 +1,5 @@
-suppressMessages(library(raster, quietly = TRUE))
 suppressMessages(library(rgdal, quietly = TRUE))
+suppressMessages(library(raster, quietly = TRUE))
 suppressMessages(library(jsonlite))
 
 # merges neighbour rasters in a list
