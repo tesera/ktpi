@@ -8,21 +8,21 @@ suppressMessages(library(jsonlite))
 # ktpi.R terrain -p ./features/ -q ./dems/ -c 3 -r 4 -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -l tiles.txt -u ./output/
 # ktpi.R ktpi -p ./features/ -q ./dems/ -c 3 -r 4 -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -k 100 -l tiles.txt -u ./output/
 # ktpi.R kaspSlp -p ./features/ -q ./dems/ -c 3 -r 4 -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -k 100 -o across -l tiles.txt -u ./output/
-# ktpi.R ktpi-cli --ktpi-function statistic --ktpi-function terrain -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 1 -d 5 -d 10 -d 20 -l tiles.txt -u ./output/
-# ktpi.R ktpi-cli --ktpi-function ktpi -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -f 20 -t 50 -s 10 -d 10 -f 50 -t 200 -s 50 -l tiles.txt -u ./output/
-# ktpi.R ktpi-cli --ktpi-function kaspSlp -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -f 20 -t 50 -s 10 -d 10 -f 50 -t 200 -s 50 -o uphill -o across -o downhill -l tiles.txt -u ./output/
-# ktpi.R ktpi-json --ktpi-function statistic --ktpi-function terrain -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 1 -d 5 -d 10 -d 20 -l tiles.txt -u ./output/
-# ktpi.R ktpi-json --ktpi-function ktpi -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -f 20 -t 50 -s 10 -d 10 -f 50 -t 200 -s 50 -l tiles.txt -u ./output/
-# ktpi.R ktpi-json --ktpi-function kaspSlp -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -f 20 -t 50 -s 10 -d 10 -f 50 -t 200 -s 50 -o uphill -o across -o downhill -l tiles.txt -u ./output/
-# ktpi.R ktpi-json --ktpi-function statistic --ktpi-function terrain --ktpi-function ktpi --ktpi-function kaspSlp --ktpi-function kaspDir --ktpi-function kaspSDir --ktpi-function kaspCDir --ktpi-function kaspSlpSDir --ktpi-function kaspSlpCDir --ktpi-function kaspSlpEle2 --ktpi-function kaspSlpEle2SDir --ktpi-function kaspSlpEle2CDir --ktpi-function kaspSlpLnEle --ktpi-function kaspSlpLnEleSlpSDir --ktpi-function kaspSlpLnEleSlpCDir -p ./features/ -q ./dems/ -a .tif -w 1 -x 3 -y 1 -z 2 -m 1 -n 4000 -d 1 -f 10 -t 20 -s 5 -d 5 -f 20 -t 100 -s 20 -d 10 -f 100 -t 200 -s 20 -d 10 -f 250 -t 500 -s 50 -d 10 -f 600 -t 1000 -s 100 -d 20 -f 1000 -t 2000 -s 200 -d 20 -f 2250 -t 2500 -s 250 -o across -o uphill -o downhill -u ./output/ > /json.txt
+# ktpi.R clicommands --ktpi-function statistic --ktpi-function terrain -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 1 -d 5 -d 10 -d 20 -l tiles.txt -u ./output/
+# ktpi.R clicommands --ktpi-function ktpi -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -f 20 -t 50 -s 10 -d 10 -f 50 -t 200 -s 50 -l tiles.txt -u ./output/
+# ktpi.R clicommands --ktpi-function kaspSlp -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -f 20 -t 50 -s 10 -d 10 -f 50 -t 200 -s 50 -o uphill -o across -o downhill -l tiles.txt -u ./output/
+# ktpi.R jsonmessages --ktpi-function statistic --ktpi-function terrain -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 1 -d 5 -d 10 -d 20 -l tiles.txt -u ./output/
+# ktpi.R jsonmessages --ktpi-function ktpi -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -f 20 -t 50 -s 10 -d 10 -f 50 -t 200 -s 50 -l tiles.txt -u ./output/
+# ktpi.R jsonmessages --ktpi-function kaspSlp -p ./features/ -q ./dems/ -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -f 20 -t 50 -s 10 -d 10 -f 50 -t 200 -s 50 -o uphill -o across -o downhill -l tiles.txt -u ./output/
+# ktpi.R jsonmessages --ktpi-function statistic --ktpi-function terrain --ktpi-function ktpi --ktpi-function kaspSlp --ktpi-function kaspDir --ktpi-function kaspSDir --ktpi-function kaspCDir --ktpi-function kaspSlpSDir --ktpi-function kaspSlpCDir --ktpi-function kaspSlpEle2 --ktpi-function kaspSlpEle2SDir --ktpi-function kaspSlpEle2CDir --ktpi-function kaspSlpLnEle --ktpi-function kaspSlpLnEleSlpSDir --ktpi-function kaspSlpLnEleSlpCDir -p ./features/ -q ./dems/ -a .tif -w 1 -x 3 -y 1 -z 2 -m 1 -n 4000 -d 1 -f 10 -t 20 -s 5 -d 5 -f 20 -t 100 -s 20 -d 10 -f 100 -t 200 -s 20 -d 10 -f 250 -t 500 -s 50 -d 10 -f 600 -t 1000 -s 100 -d 20 -f 1000 -t 2000 -s 200 -d 20 -f 2250 -t 2500 -s 250 -o across -o uphill -o downhill -u ./output/ > /json.txt
 
 'Usage:
     ktpi.R (statistic | terrain) (--folder <fpre>) (--dem-folder <dpre>) (--tile-col <tcol>) (--tile-row <trow>) (--extension <ext>) (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cell-size <csize>) (--raster-cells <rcell>) [--dem-calc-size <dsize>] [--limit-tiles <tiles-csv>] (--output-folder <ofolder>) [--exp-rast]
     ktpi.R ktpi (--folder <fpre>) (--dem-folder <dpre>) (--tile-col <tcol>) (--tile-row <trow>) (--extension <ext>) (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cell-size <csize>) (--raster-cells <rcell>) [--dem-calc-size <dsize>] [--kernel-size <ksize>] [--limit-tiles <tiles-csv>] (--output-folder <ofolder>) [--exp-rast]
     ktpi.R (kaspSlp | kaspDir | kaspSDir | kaspCDir | kaspSlpSDir | kaspSlpCDir | kaspSlpEle2 | kaspSlpEle2SDir | kaspSlpEle2CDir | kaspSlpLnEle | kaspSlpLnEleSlpSDir | kaspSlpLnEleSlpCDir) (--folder <fpre>) (--dem-folder <dpre>) (--tile-col <tcol>) (--tile-row <trow>) (--extension <ext>) (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cell-size <csize>) (--raster-cells <rcell>) [--dem-calc-size <dsize>] [--kernel-size <ksize>] [--orientation <orient>] (--output-folder <ofolder>) [-l|--limit-tiles <tiles-csv>] [--exp-rast]
     ktpi.R neighbours [--folder <pre>] (-c <fcol>) (-r <frow>) [--extension <app>] (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-k <ksize>) [-l|--limit-tiles <tiles-csv>]
-    ktpi.R ktpi-cli (--ktpi-function <ktpi-func>)... (--folder <fpre>) (--dem-folder <dpre>) (--extension <app>) (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-l|--limit-tiles <tiles-csv>] (--output-folder <ofolder>) [--exp-rast]
-    ktpi.R ktpi-json (--ktpi-function <ktpi-func>)... (--folder <fpre>) (--dem-folder <dpre>) (--extension <app>) (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-l|--limit-tiles <tiles-csv>] (--output-folder <ofolder>) [--exp-rast]
+    ktpi.R clicommands (--ktpi-function <ktpi-func>)... (--folder <fpre>) (--dem-folder <dpre>) (--extension <app>) (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-l|--limit-tiles <tiles-csv>] (--output-folder <ofolder>) [--exp-rast]
+    ktpi.R jsonmessages (--ktpi-function <ktpi-func>)... (--folder <fpre>) (--dem-folder <dpre>) (--extension <app>) (--tile-col-min <cmin>) (--tile-col-max <cmax>) (--tile-row-min <rmin>) (--tile-row-max <rmax>) (--raster-cells <rcell>) (--raster-cell-size <csize>) (-d <dsize>... [-f <kfrom> -t <kto> -s <kstep>]...) [-o|--orientation <orient>...] [-l|--limit-tiles <tiles-csv>] (--output-folder <ofolder>) [--exp-rast]
     ktpi.R [-h|--help]
     kpti.R --version
     ktpi.R info
@@ -46,8 +46,8 @@ Options:
     kaspSlpLnEleSlpSDir                         runs Al Stage slope * natural log of dem * slp * sin direction
     kaspSlpLnEleSlpCDir                         runs Al Stage slope * natural log of dem * slp * cos direction
     neighbours                                  gets a list of the neighbouring tiles of a given raster tile, based on the given raster dimensions, and a given kernel size, and a text file of tiles to filter (column of "col/row").
-    ktpi-cli                                    creates a list of CLI commands on min/max column/row, dem calculation sizes, kernel from-to-step, orientation, and a text file of tiles to filter
-    ktpi-json                                   creates a list of JSON messages on min/max column/row, dem calculation sizes, kernel from-to-step, orientation, and a text file of tiles to filter
+    clicommands                                    creates a list of CLI commands on min/max column/row, dem calculation sizes, kernel from-to-step, orientation, and a text file of tiles to filter
+    jsonmessages                                   creates a list of JSON messages on min/max column/row, dem calculation sizes, kernel from-to-step, orientation, and a text file of tiles to filter
     -p <fpre>, --folder <fpre>                  prepended input feature raster source folder (/<folder>/)
     -q <dpre>, --dem-folder <dpre>              prepended input DEM raster source folder (/<folder>/)
     -c <fcol>, --tile-col <fcol>                tile column
@@ -227,7 +227,7 @@ if (args$'neighbours') {
         args$'raster-cells', args$'raster-cell-size', args$'kernel-size', tiles)
 }
 
-if (args$'ktpi-cli') {
+if (args$'clicommands') {
 
     source_local("lib/ktpi_util.R")
 
@@ -237,7 +237,7 @@ if (args$'ktpi-cli') {
         args$'kernel-step', args$'orientation', args$'exp-rast', tilesfile, tiles)
 }
 
-if (args$'ktpi-json') {
+if (args$'jsonmessages') {
 
     source_local("lib/ktpi_util.R")
 
