@@ -7,6 +7,7 @@ RUN apt-get install -y libssl-dev
 # Install R Dependencies
 RUN R -e 'install.packages(c("docopt"))'
 RUN R -e 'install.packages(c("jsonlite"))'
+RUN R -e 'install.packages(c("stringr"))'
 RUN mkdir -p /opt/ktpi
 
 # Setup some ENV vars
