@@ -111,6 +111,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     neighbourFileList <- getNeighbours(args$'folder', args$'tile-col', args$'tile-row', args$'extension',
         args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
         args$'raster-cells', args$'raster-cell-size', args$'kernel-size', tiles)
+    print(neighbourFileList)
 
     # merges feature neighbouring tile files
     featureNeighbourRaster <- mergeRasters(neighbourFileList)
@@ -118,7 +119,8 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     # gets dem neighbouring tile files based on the kernel neighbourhood size
     neighbourFileList <- getNeighbours(args$'dem-folder', args$'tile-col', args$'tile-row', args$'extension',
         args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
-        args$'raster-cells', args$'raster-cell-size', args$'kernel-size', tiles)
+        args$'raster-cells', args$'raster-cell-size', args$'kernel-size', "none")
+    print(neighbourFileList)
 
     # merges dem neighbouring tile files
     demNeighbourRaster <- mergeRasters(neighbourFileList)
