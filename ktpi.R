@@ -225,9 +225,10 @@ if (args$'neighbours') {
 
     source_local("lib/ktpi_util.R")
 
-    getNeighbours(args$'folder', args$'tile-col', args$'tile-row', args$'extension',
+    neighbours <- getNeighbours(args$'folder', args$'tile-col', args$'tile-row', args$'extension',
         args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
         args$'raster-cells', args$'raster-cell-size', args$'kernel-size', tiles)
+    writeLines(neighbours)
 }
 
 if (args$'clicommands') {
