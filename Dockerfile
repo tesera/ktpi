@@ -1,3 +1,5 @@
+FROM tesera/hris-runner
+
 FROM achubaty/r-spatial-base
 MAINTAINER Tesera Systems Inc.
 
@@ -19,6 +21,9 @@ ENV HRIS_DATA="/data"
 RUN mkdir -p /root/ktpi/
 COPY ktpi.R /root/ktpi
 COPY lib/ /root/ktpi/lib/
+
+# Add runner dependencies
+COPY --from=0 /usr/local/hris-runner /usr/local/hris-runner
 
 # Finally, set the container entrypoint
 ENTRYPOINT ["ktpi.R"]
