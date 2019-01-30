@@ -126,6 +126,9 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     # merges dem neighbouring tile files
     demNeighbourRaster <- mergeRasters(neighbourFileList)
 
+    # ensure featureNeighbourRaster & demNeighbourRasterExtent are equivalent
+    featureNeighbourRaster <- extend(featureNeighbourRaster, extent(demNeighbourRaster), value=NA)
+
     # gets initial indice table with unique trFeatId and cell counts
     indic <- getFeatureIdCount(args$'folder',
             args$'tile-col',
