@@ -87,13 +87,20 @@ source_local <- function(fname){
     source(paste(base_dir, fname, sep="/"))
 }
 
+ensureDataPath <- function(dataPath){
+    if (!startsWith(dataPath, "input")) {
+        dataPath <- file.path("input", dataPath)
+    }
+    return(dataPath)
+}
+
 if (args$'info') {
     print(.libPaths())
     print(sessionInfo())
     print(version)
 }
 
-tilesfile <- args$'limit-tiles'
+tilesfile <- file.path(Sys.getenv('HRIS_DATA'), ensureDataPath(args$'limit-tiles'))
 tiles <- "none"
 if (tilesfile != "none") { 
     tiles <- read.csv(tilesfile, stringsAsFactors=FALSE, header=FALSE)$V1
@@ -108,8 +115,11 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     source_local("lib/ktpi_aspect.R")
     source_local("lib/ktpi_terrain.R")
 
+    folderPath <- ensureDataPath(args$'folder')
+    demFolderPath <- ensureDataPath(args$'dem-folder')
+
     # gets feature neighbouring tile files based on the kernel neighbourhood size
-    neighbourFileList <- getNeighbours(args$'folder', args$'tile-col', args$'tile-row', args$'extension',
+    neighbourFileList <- getNeighbours(folderPath, args$'tile-col', args$'tile-row', args$'extension',
         args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
         args$'raster-cells', args$'raster-cell-size', args$'kernel-size', tiles)
     print(neighbourFileList)
@@ -118,7 +128,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     featureNeighbourRaster <- mergeRasters(neighbourFileList)
 
     # gets dem neighbouring tile files based on the kernel neighbourhood size
-    neighbourFileList <- getNeighbours(args$'dem-folder', args$'tile-col', args$'tile-row', args$'extension',
+    neighbourFileList <- getNeighbours(demFolderPath, args$'tile-col', args$'tile-row', args$'extension',
         args$'tile-col-min', args$'tile-col-max', args$'tile-row-min', args$'tile-row-max', 
         args$'raster-cells', args$'raster-cell-size', args$'kernel-size', "none")
     print(neighbourFileList)
@@ -130,7 +140,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     featureNeighbourRaster <- extend(featureNeighbourRaster, extent(demNeighbourRaster), value=NA)
 
     # gets initial indice table with unique trFeatId and cell counts
-    indic <- getFeatureIdCount(args$'folder',
+    indic <- getFeatureIdCount(folderPath,
             args$'tile-col',
             args$'tile-row',
             args$'extension')
@@ -139,7 +149,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     # runs statistic indices
     if (args$'statistic') {
         ktpiFunction <- "statistic"
-        featStat <- statisticIndices(args$'folder', args$'tile-col', args$'tile-row', args$'extension',
+        featStat <- statisticIndices(folderPath, args$'tile-col', args$'tile-row', args$'extension',
             featureNeighbourRaster, demNeighbourRaster,
             args$'output-folder',
             args$'dem-calc-size',
@@ -151,7 +161,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     # runs terrain indices
     if (args$'terrain') {
         ktpiFunction <- "terrain"
-        featTerr <- terrainIndices(args$'folder', args$'tile-col', args$'tile-row', args$'extension',
+        featTerr <- terrainIndices(folderPath, args$'tile-col', args$'tile-row', args$'extension',
             featureNeighbourRaster,
             demNeighbourRaster,
             args$'output-folder',
@@ -164,7 +174,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     # runs kernel topographic position indices
     if (args$'ktpi') {
         ktpiFunction <- "ktpi"
-        featKtpi <- ktpiIndices(args$'folder', args$'tile-col', args$'tile-row', args$'extension',
+        featKtpi <- ktpiIndices(folderPath, args$'tile-col', args$'tile-row', args$'extension',
             featureNeighbourRaster,
             demNeighbourRaster,
             args$'output-folder',
@@ -194,7 +204,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
         if (args$'kaspSlpLnEleSlpSDir') { ktpiFunction <- "kaspSlpLnEleSlpSDir" }
         if (args$'kaspSlpLnEleSlpCDir') { ktpiFunction <- "kaspSlpLnEleSlpCDir" }
         featKaspi <- kaspIndices(ktpiFunction,
-            args$'folder', args$'tile-col', args$'tile-row', args$'extension',
+            folderPath, args$'tile-col', args$'tile-row', args$'extension',
             featureNeighbourRaster,
             demNeighbourRaster,
             args$'output-folder',
