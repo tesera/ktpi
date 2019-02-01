@@ -100,9 +100,10 @@ if (args$'info') {
     print(version)
 }
 
-tilesfile <- file.path(Sys.getenv('HRIS_DATA'), ensureDataPath(args$'limit-tiles'))
+tilesfile <- args$'limit-tiles'
 tiles <- "none"
 if (tilesfile != "none") { 
+    tilesfile <- file.path(Sys.getenv('HRIS_DATA'), ensureDataPath(tilesfile))
     tiles <- read.csv(tilesfile, stringsAsFactors=FALSE, header=FALSE)$V1
 }
 
