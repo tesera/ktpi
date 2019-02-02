@@ -103,8 +103,8 @@ if (args$'info') {
 tilesfile <- args$'limit-tiles'
 tiles <- "none"
 if (tilesfile != "none") { 
-    tilesfile <- file.path(Sys.getenv('HRIS_DATA'), ensureDataPath(tilesfile))
-    tiles <- read.csv(tilesfile, stringsAsFactors=FALSE, header=FALSE)$V1
+    tilesFileFullPath <- file.path(Sys.getenv('HRIS_DATA'), ensureDataPath(tilesfile))
+    tiles <- read.csv(tilesFileFullPath, stringsAsFactors=FALSE, header=FALSE)$V1
 }
 
 if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kaspDir' | 
