@@ -120,7 +120,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     demFolderPath <- ensureDataPath(args$'dem-folder')
 
     # test the actual image dimension matches the given image dimension (-n / --raster-cells)
-    imagePath <- paste(folderPath, args$'tile-col', "/", args$'tile-col', args$'extension', sep = "")
+    imagePath <- paste(folderPath, args$'tile-col', "/", args$'tile-row', args$'extension', sep = "")
     actualRasterCells <- ncol(raster(imagePath))
     if (actualRasterCells != args$'raster-cells') {
         stop(paste("Your image size is ", actualRasterCells, " please change your raster-cells (-n) value.", sep = ""))
