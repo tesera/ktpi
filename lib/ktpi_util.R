@@ -5,18 +5,26 @@ suppressMessages(library(jsonlite))
 # merges neighbour rasters in a list
 mergeRasters <- function(neighbourFileList) {
     # initializes mergedNeighbourRasters raster
+    print (paste("neighbourFileList length: ", length(neighbourFileList), sep = ""))
     mergedNeighbourRasters <- raster(neighbourFileList[1])
+    print (mergedNeighbourRasters)
     # merges all other rasters
-    for (file in neighbourFileList[2:length(neighbourFileList)]) {
-        tryCatch({
-            r <- raster(file)
-            mergedNeighbourRasters <- merge(mergedNeighbourRasters, r)
-        }, warning = function(w) {
-            print(w)
-        }, error = function(e) {
-            print(e)
-        })
+    print ("merges all other rasters")
+    if (length(neighbourFileList) > 1) {
+        for (file in neighbourFileList[2:length(neighbourFileList)]) {
+            print ("merging")
+            tryCatch({
+                r <- raster(file)
+                print (file)
+                mergedNeighbourRasters <- merge(mergedNeighbourRasters, r)
+            }, warning = function(w) {
+                print(w)
+            }, error = function(e) {
+                print(e)
+            })
+        }
     }
+
     # return merged neighbour raster
     return(mergedNeighbourRasters)
 }
