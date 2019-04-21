@@ -258,7 +258,7 @@ createKtpiJSONMessages <- function(ktpiFunction, featureFolder, demFolder, exten
                                     # additionalArgs <- paste("-d", demCalcSize[size], "-k", kernel, orientation, exportRasters, "-l", tilesfile, sep = " ")
                                     # runCmd <- paste(ktpiScr, func, featureFile, demFolder, outputFolder, additionalArgs)
                                     # ktpi.R kaspSlp -p ../test/exp-input/features/ -q ../test/exp-input/dems/ -c 3 -r 4 -a .tif -w 1 -x 99 -y 1 -z 99 -m 1 -n 2000 -d 5 -k 100 -o across -l tiles.txt -u ../
-                                    runCmd <- paste("ktpi.R", func, "-p", featureFolder, "-q", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileColMax, "-m", rasterCellSize, "-n", rasterCells, "-d", demCalcSize[size], "-k", kernel, "-o", orient, "-l", tilesfile, "-u", outputFolder, exportRasters)
+                                    runCmd <- paste("ktpi.R", func, "-p", featureFolder, "-q", demFolder, "-c", col, "-r", row, "-a", extension, "-w", tileColMin, "-x", tileColMax, "-y", tileRowMin, "-z", tileRowMax, "-m", rasterCellSize, "-n", rasterCells, "-d", demCalcSize[size], "-k", kernel, "-o", orient, "-l", tilesfile, "-u", outputFolder, exportRasters)
                                     ktpiJSONMessage$run <- c(runCmd)
                                     ktpiJSONMessages <- rbind(ktpiJSONMessages, ktpiJSONMessage)
                                 }

@@ -55,7 +55,7 @@ Options:
     -r <frow>, --tile-row <frow>                tile row
     -a <ext>, --extension <ext>                 appended tile file extension (.tif)
     -w <cmin>, --tile-col-min <cmin>            project tile min column value
-    -x <cmax>, --tile-col-max <cmax>            project ile max column value
+    -x <cmax>, --tile-col-max <cmax>            project tile max column value
     -y <rmin>, --tile-row-min <rmin>            project tile min row value
     -z <rmax>, --tile-row-max <rmax>            project tile max row value
     -m <csize>, --raster-cell-size <csize>      raster cell size (m)
