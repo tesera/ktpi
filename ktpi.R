@@ -133,6 +133,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     print(neighbourFileList)
 
     # merges feature neighbouring tile files
+    print ("merges feature neighbouring tile files")
     featureNeighbourRaster <- mergeRasters(neighbourFileList)
 
     # gets dem neighbouring tile files based on the kernel neighbourhood size
@@ -142,6 +143,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     print(neighbourFileList)
 
     # merges dem neighbouring tile files
+    print ("merges dem neighbouring tile files")
     demNeighbourRaster <- mergeRasters(neighbourFileList)
 
     # ensure featureNeighbourRaster & demNeighbourRasterExtent are equivalent
