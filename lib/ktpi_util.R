@@ -217,6 +217,7 @@ createKtpiJSONMessages <- function(ktpiFunction, featureFolder, demFolder, exten
                 if (tiles == "none" | paste(col, row, sep="/") %in% tiles) {
                     CR <- paste(col, row, sep = "/")
                     featureFile <- paste(featureFolder, CR, extension, sep = "")
+                    message(paste("Running",func,"on",col,"/",row,sep=" "))
                     if (func == "statistic" | func == "terrain") {
                         for (size in unique(demCalcSize)) {
                             kernel <- 1

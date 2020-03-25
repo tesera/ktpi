@@ -44,6 +44,6 @@ fi
 
 DATA_MOUNT="-v "`pwd`"/data:/data"
 OPTIONS="${DEBUG} ${DATA_MOUNT} ${LOCAL_LIBS} ${RUNNER}"
-COMMAND="docker run ${OPTIONS} -ti ${CONTAINER} ${@}"
+COMMAND="docker run ${OPTIONS} -i ${CONTAINER} ${@}"
 
 eval $COMMAND
