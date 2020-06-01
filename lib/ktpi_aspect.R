@@ -15,9 +15,9 @@ kaspIndices <- function(func = c("kaspSlp", "kaspDir",
     # copies feature raster for extent
     featExt <- feat
     # initializes feat datastore
-    featKaspi<- data.frame(trFeatId = integer(length(unique(feat))))
+    featKaspi<- data.frame(featid = integer(length(unique(feat))))
     # populates feat datastore with unique ids
-    featKaspi$trFeatId <- unique(feat)
+    featKaspi$featid <- unique(feat)
     # gets feat raster cell size
     featSize <- xres(feat)
 
@@ -423,9 +423,9 @@ kaspIndices <- function(func = c("kaspSlp", "kaspDir",
     if (orientation == "downhill") { orientation <- "dwn" }
     if (orientation == "across") { orientation <- "acr" }
     alias <- sprintf("%sC%d%sK%dO%s", "trKa", demCalcSize, func, kernelSize, orientation)
-    colnames(featKasp) <- c("trFeatId", alias)
+    colnames(featKasp) <- c("featid", alias)
     # merges the results into the previous neighbourhood iterations
-    featKaspi <- merge(featKaspi, featKasp, by = "trFeatId")
+    featKaspi <- merge(featKaspi, featKasp, by = "featid")
 
     return(featKaspi)
 }

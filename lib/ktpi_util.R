@@ -39,17 +39,17 @@ getFeatureIdCount <- function(fileFolder, tileCol, tileRow, fileExt) {
     # gets the tile number from the column_row
     tile <- paste(tileCol, tileRow, sep = "/")
     # initializes the indices dataframe for the tile
-    indic <- data.frame(trFeatId = integer(length(unique(feat))), trTileId = character(length(unique(feat))))
+    indic <- data.frame(featid = integer(length(unique(feat))), tileid = character(length(unique(feat))))
     # populates feature statistics with the unique zone in the tile
-    indic$trFeatId <- unique(feat)
+    indic$featid <- unique(feat)
     # populates feature statistics with the tile number
-    indic$trTileId <- tile
+    indic$tileid <- tile
     # calculates the cell frequency for every feature in the tile
-    trFeatIdFreq <- freq(feat, merge=TRUE)
+    featidFreq <- freq(feat, merge=TRUE)
     # creates field names 'zone' and 'count_tile_<dem resolution>' in feature frequency dataframe
-    colnames(trFeatIdFreq) <- c("trFeatId", paste("trCellC", xres(feat), "Cnt", sep = ""))
+    colnames(featidFreq) <- c("featid", paste("st_sum", xres(feat), sep = "_"))
     # merges dataframes indices and feature frequency
-    indic <- merge(indic, trFeatIdFreq, by = "trFeatId")
+    indic <- merge(indic, featidFreq, by = "featid")
     # return indice table
     return(indic)
 }

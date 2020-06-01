@@ -149,7 +149,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
     # ensure featureNeighbourRaster & demNeighbourRasterExtent are equivalent
     featureNeighbourRaster <- extend(featureNeighbourRaster, extent(demNeighbourRaster), value=NA)
 
-    # gets initial indice table with unique trFeatId and cell counts
+    # gets initial indice table with unique featid and cell counts
     indic <- getFeatureIdCount(folderPath,
             args$'tile-col',
             args$'tile-row',
@@ -164,7 +164,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
             args$'output-folder',
             args$'dem-calc-size',
             args$'exp-rast')
-        indic <- merge(indic, featStat, by = "trFeatId")
+        indic <- merge(indic, featStat, by = "featid")
         indicFeatCountPost <- nrow(indic)
     }
 
@@ -177,7 +177,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
             args$'output-folder',
             args$'dem-calc-size',
             args$'exp-rast')
-        indic <- merge(indic, featTerr, by = "trFeatId")
+        indic <- merge(indic, featTerr, by = "featid")
         indicFeatCountPost <- nrow(indic)
     }
 
@@ -191,7 +191,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
             args$'dem-calc-size',
             args$'kernel-size',
             args$'exp-rast')
-        indic <- merge(indic, featKtpi, by = "trFeatId")
+        indic <- merge(indic, featKtpi, by = "featid")
         indicFeatCountPost <- nrow(indic)
     }
 
@@ -222,7 +222,7 @@ if (args$'statistic' | args$'terrain' | args$'ktpi' | args$'kaspSlp' | args$'kas
             args$'kernel-size',
             args$'exp-rast',
             args$'orientation')
-        indic <- merge(indic, featKaspi, by = "trFeatId")
+        indic <- merge(indic, featKaspi, by = "featid")
         indicFeatCountPost <- nrow(indic)
     }
 
