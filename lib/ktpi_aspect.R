@@ -331,74 +331,74 @@ kaspIndices <- function(func = c("kaspSlp", "kaspDir",
 
     if (func == "kaspSlp") {
         demKasp <- kaspSlp
-        func <- "Slp"
+        func <- "slpd"
     }
 
     if (func == "kaspDir") {
         demKasp <- kaspDir
-        func <- "Dir"
+        func <- "dird"
     }
 
     if (func == "kaspSDir") {
         demKasp <- kaspSDir
-        func <- "SDir"
+        func <- "sdi"
     }
 
     if (func == "kaspCDir") {
         demKasp <- kaspCDir
-        func <- "CDir"
+        func <- "cdi"
     }
 
     if (func == "kaspSlpSDir") {
         demKasp <- kaspSlp * kaspSDir
-        func <- "SlSDr"
+        func <- "ssdi"
     }
 
     if (func == "kaspSlpCDir") {
         demKasp <- kaspSlp * kaspCDir
-        func <- "SlCDr"
+        func <- "scdi"
     }
 
     if (func == "kaspSlpEle2") {
         demKasp <- kaspSlp * dem^2
-        func <- "SlE2"
+        func <- "se2"
     }
 
     if (func == "kaspSlpEle2SDir") {
         demKasp <- kaspSlp * dem^2 * kaspSDir
-        func <- "SlEl2SDr"
+        func <- "se2sdi"
     }
 
     if (func == "kaspSlpEle2CDir") {
         demKasp <- kaspSlp * dem^2 * kaspCDir
-        func <- "SlEl2CDr"
+        func <- "se2cdi"
     }
 
     if (func == "kaspSlpLnEle") {
         demKasp <- kaspSlp * log( dem + 1 )
-        func <- "SlLnEl"
+        func <- "slne"
     }
 
     if (func == "kaspSlpLnEleSlpSDir") {
         demKasp <- kaspSlp * log( dem + 1 ) * kaspSlp * kaspSDir
-        func <- "SlLnElSlSDr"
+        func <- "slnesdi"
     }
 
     if (func == "kaspSlpLnEleSlpCDir") {
         demKasp <- kaspSlp * log( dem + 1 ) * kaspSlp * kaspCDir
-        func <- "SlLnElSlCDr"
+        func <- "slnecdi"
     }
 
     if (exportRasters) {
-        # puts folder structure kasp/{mean_diff,sd}/{demCalcSize}/{kernelSize}/{Zoom}/{Row}/{Col}
-        createFolder(outputFolder, 'tr_ka')
-        createFolder(paste(outputFolder, 'tr_ka', sep = '/'), demCalcSize)
-        createFolder(paste(outputFolder, 'tr_ka', demCalcSize, sep = '/'), orientation)
-        createFolder(paste(outputFolder, 'tr_ka', demCalcSize, orientation, sep = '/'), func)
-        createFolder(paste(outputFolder, 'tr_ka', demCalcSize, orientation, func, sep = '/'), kernelSize)
-        createFolder(paste(outputFolder, 'tr_ka', demCalcSize, orientation, func, kernelSize, sep = '/'), tileCol)
+        # puts folder structure ka/{mean_diff,sd}/{demCalcSize}/{kernelSize}/{Zoom}/{Row}/{Col}
+        createFolder(outputFolder, 'ka')
+        createFolder(paste(outputFolder, 'ka', sep = '/'), func)
+        createFolder(paste(outputFolder, 'ka', func, sep = '/'), demCalcSize)
+        createFolder(paste(outputFolder, 'ka', func, demCalcSize, sep = '/'), kernelSize)
+        createFolder(paste(outputFolder, 'ka', func, demCalcSize, kernelSize, sep = '/'), orientation)
+        createFolder(paste(outputFolder, 'ka', func, demCalcSize, kernelSize, orientation, sep = '/'), tileCol)
         # gets the export folder and filename
-        exportFolder <- paste(outputFolder, "tr_ka", demCalcSize, orientation, func, kernelSize, tileCol, sep = "/")
+        exportFolder <- paste(outputFolder, "ka", func, demCalcSize, kernelSize, orientation, tileCol, sep = "/")
         exportFileFunc <- paste(exportFolder, "/", tileRow, ".tif", sep = "")
         # crops the dem tpi to the original feat extent
         demKaspExt <- crop(demKasp, featExt)
@@ -420,9 +420,9 @@ kaspIndices <- function(func = c("kaspSlp", "kaspDir",
     featKasp <- zonal(demKasp, feat, digits = 0, na.rm = TRUE)
     # adds new column based on the dem size, neighbourhood size, kernel size, and function
     if (orientation == "uphill") { orientation <- "up" }
-    if (orientation == "downhill") { orientation <- "dwn" }
-    if (orientation == "across") { orientation <- "acr" }
-    alias <- sprintf("%sC%d%sK%dO%s", "trKa", demCalcSize, func, kernelSize, orientation)
+    if (orientation == "downhill") { orientation <- "dn" }
+    if (orientation == "across") { orientation <- "ac" }
+    alias <- sprintf("%s_%s_%d_%d_%s", "ka", func, demCalcSize, kernelSize, orientation)
     colnames(featKasp) <- c("featid", alias)
     # merges the results into the previous neighbourhood iterations
     featKaspi <- merge(featKaspi, featKasp, by = "featid")

@@ -37,7 +37,7 @@ getFeatureIdCount <- function(fileFolder, tileCol, tileRow, fileExt) {
     # gets raster
     feat <- raster(filePath)
     # gets the tile number from the column_row
-    tile <- paste(tileCol, tileRow, sep = "/")
+    tile <- paste(tileCol, tileRow, sep = "\\")
     # initializes the indices dataframe for the tile
     indic <- data.frame(featid = integer(length(unique(feat))), tileid = character(length(unique(feat))))
     # populates feature statistics with the unique zone in the tile
